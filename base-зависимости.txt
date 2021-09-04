@@ -1,0 +1,7 @@
+           base
+          /   \
+    garage     worker
+   /     \
+sheet     car
+  |
+record
