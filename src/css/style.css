@@ -30,6 +30,8 @@ body .main-app .header {
       grid-template-columns: 1fr 50px 50px;
   height: 40px;
   background-color: #212121;
+  position: fixed;
+  width: 100%;
 }
 
 body .main-app .header .title {
@@ -205,6 +207,23 @@ body .main-app .main .display .all-base {
 
 body .main-app .main .display .all-garages {
   display: none;
+}
+
+body .main-app .main .display .all-garages form[name="formFromChangedGarage"],
+body .main-app .main .display .all-garages form[name="formFromCreateGarage"] {
+  display: inline-block;
+}
+
+body .main-app .main .display .all-garages form[name="formFromChangedGarage"] select[name="FromBase"],
+body .main-app .main .display .all-garages form[name="formFromChangedGarage"] select[name="FromBaseCrt"],
+body .main-app .main .display .all-garages form[name="formFromCreateGarage"] select[name="FromBase"],
+body .main-app .main .display .all-garages form[name="formFromCreateGarage"] select[name="FromBaseCrt"] {
+  background-color: #212121;
+  color: #ccc;
+  padding: 10px;
+  outline: none;
+  border: 0;
+  border-bottom: 3px solid #333;
 }
 
 body .main-app .main .display .all-autos {

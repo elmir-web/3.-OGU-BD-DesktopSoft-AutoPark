@@ -25,6 +25,8 @@ body {
       grid-template-columns: 1fr 50px 50px;
       height: 40px;
       background-color: #212121;
+      position: fixed;
+      width: 100%;
 
       .title {
         -webkit-app-region: drag;
@@ -183,6 +185,21 @@ body {
 
         .all-garages {
           display: none;
+
+          form[name="formFromChangedGarage"],
+          form[name="formFromCreateGarage"] {
+            display: inline-block;
+
+            select[name="FromBase"],
+            select[name="FromBaseCrt"] {
+              background-color: #212121;
+              color: #ccc;
+              padding: 10px;
+              outline: none;
+              border: 0;
+              border-bottom: 3px solid #333;
+            }
+          }
         }
 
         .all-autos {

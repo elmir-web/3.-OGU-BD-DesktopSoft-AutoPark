@@ -5,3 +5,14 @@
 sheet     car
   |
 record
+ВЫШЕ КАК ПОЧИСТИТЬ БАЗЫ
+
+    garage
+   /     \
+sheet     car
+  |
+record
+ВЫШЕ КАК ПОЧИСТИТЬ ГАРАЖИ
+
+
+

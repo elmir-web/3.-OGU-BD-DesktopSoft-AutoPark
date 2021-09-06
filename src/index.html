@@ -23,6 +23,9 @@
         </div>
       </div>
 
+      <br />
+      <br />
+
       <div class="main">
         <h1>Компания "ОГУ"</h1>
 
@@ -46,12 +49,12 @@
             <div class="display-control">
               <input
                 type="text"
-                class="input-id-change"
+                class="input-id-change-base"
                 placeholder="Введите ID базы"
               />
               <input
                 type="text"
-                class="input-name-change"
+                class="input-name-change-base"
                 placeholder="Введите новое название базы"
               />
               <button class="all-butt butt-navs butt-change-base">
@@ -63,7 +66,7 @@
             <div class="display-control">
               <input
                 type="text"
-                class="input-name-create"
+                class="input-name-create-base"
                 placeholder="Введите название новой базы"
               />
               <button class="all-butt butt-navs butt-create-base">
@@ -75,7 +78,7 @@
             <div class="display-control">
               <input
                 type="text"
-                class="input-id-remove"
+                class="input-id-remove-base"
                 placeholder="Введите ID базы"
               />
               <button class="all-butt butt-navs butt-remove-base">
@@ -84,7 +87,66 @@
             </div>
           </div>
 
-          <div class="all-display all-garages">все гаражи</div>
+          <div class="all-display all-garages">
+            <div class="display-print">| тут будут все гаражи |</div>
+
+            <h2>Отредактировать название и назначение гаража</h2>
+            <div class="display-control">
+              <input
+                type="text"
+                class="input-id-change-garage"
+                placeholder="Введите ID гаража"
+              />
+              <input
+                type="text"
+                class="input-name-change-garage"
+                placeholder="Введите новое название гаража"
+              />
+              <form name="formFromChangedGarage">
+                <select name="FromBase" size="1">
+                  <option value="JS">JavaScript</option>
+                  <option value="Java">Java</option>
+                  <option value="C#">C#</option>
+                  <option value="C++">C++</option>
+                </select>
+              </form>
+              <button class="all-butt butt-navs butt-change-garage">
+                Изменить
+              </button>
+            </div>
+
+            <h2>Создать новый гараж</h2>
+            <div class="display-control">
+              <input
+                type="text"
+                class="input-name-create-garage"
+                placeholder="Введите название нового гаража"
+              />
+              <form name="formFromCreateGarage">
+                <select name="FromBaseCrt" size="1">
+                  <option value="JS">JavaScript</option>
+                  <option value="Java">Java</option>
+                  <option value="C#">C#</option>
+                  <option value="C++">C++</option>
+                </select>
+              </form>
+              <button class="all-butt butt-navs butt-create-garage">
+                Создать гараж
+              </button>
+            </div>
+
+            <h2>Удалить гараж (ОСТОРОЖНО!)</h2>
+            <div class="display-control">
+              <input
+                type="text"
+                class="input-id-remove-garage"
+                placeholder="Введите ID базы"
+              />
+              <button class="all-butt butt-navs butt-remove-garage">
+                Удалить гараж (ОСТОРОЖНО!)
+              </button>
+            </div>
+          </div>
 
           <div class="all-display all-autos">все тс</div>
 
