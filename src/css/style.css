@@ -230,6 +230,23 @@ body .main-app .main .display .all-autos {
   display: none;
 }
 
+body .main-app .main .display .all-autos form[name="formFromChangedAuto"],
+body .main-app .main .display .all-autos form[name="formFromCreateAuto"] {
+  display: inline-block;
+}
+
+body .main-app .main .display .all-autos form[name="formFromChangedAuto"] select[name="FromGarage"],
+body .main-app .main .display .all-autos form[name="formFromChangedAuto"] select[name="FromGarageCrt"],
+body .main-app .main .display .all-autos form[name="formFromCreateAuto"] select[name="FromGarage"],
+body .main-app .main .display .all-autos form[name="formFromCreateAuto"] select[name="FromGarageCrt"] {
+  background-color: #212121;
+  color: #ccc;
+  padding: 10px;
+  outline: none;
+  border: 0;
+  border-bottom: 3px solid #333;
+}
+
 body .main-app .main .display .types-fuels-and-lubs {
   display: none;
 }

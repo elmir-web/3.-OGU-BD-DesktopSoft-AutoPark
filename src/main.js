@@ -18,9 +18,9 @@ global.connectMySQL = null;
 
 const createWindow = async () => {
   mainWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 810,
     minHeight: 600,
-    maxWidth: 800,
+    maxWidth: 810,
     maxHeight: 600,
     frame: false,
     webPreferences: {

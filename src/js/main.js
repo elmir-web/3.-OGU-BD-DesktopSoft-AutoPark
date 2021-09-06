@@ -5,6 +5,7 @@ const wnd = remote.getCurrentWindow();
 
 // ______________________________________________________________________ | Глобальные переменные файла
 let mainAllBasesRows = [];
+let mainAllGaragesRows = [];
 // ______________________________________________________________________ | Глобальные переменные файла
 
 // ______________________________________________________________________ | Где все начинается
@@ -94,6 +95,20 @@ window.onload = function () {
     .querySelector(".butt-remove-garage")
     .addEventListener("click", async () => await DeleteGarage());
   // ____________________________________________________________ | Навигация: "Все гаражи"
+
+  // ____________________________________________________________ | Навигация: "Все автомобили"
+  document //                                             html.button."Изменить"
+    .querySelector(".butt-change-auto")
+    .addEventListener("click", async () => await RenameVehicle());
+
+  document //                                             html.button."Создать автомобиль"
+    .querySelector(".butt-create-auto")
+    .addEventListener("click", async () => await CreateVehicle());
+
+  document //                                             html.button."Удалить автомобиль"
+    .querySelector(".butt-remove-auto")
+    .addEventListener("click", async () => await RemoveVehicle());
+  // ____________________________________________________________ | Навигация: "Все автомобили"
 };
 // ______________________________________________________________________ | Где все начинается
 
@@ -117,6 +132,7 @@ async function ShowDisplayStatus(statusName) {
   // вывод всех гаражей из таблицы
   // показать все авто
   else if (statusName === ".all-autos" /* html.button."Все автомобили" */) {
+    await ShowAllAutos();
   }
   // показать все гсм
   else if (
@@ -718,3 +734,196 @@ async function DeleteGarage() {
 }
 // ____________________________________________________________ | Функция для удаления гаража
 // ______________________________________________________________________ | [ЛОГИКА] Состояние "Все гаражи"
+
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Все автомобили"
+// ____________________________________________________________ | Функция для загрузки всех автомобилей из таблицы MySQL и отображения в html.table
+async function ShowAllAutos() {
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("select * from car"); // MySQL: Показать все гаражи из таблицы баз и сохранить результат в "rows"
+
+  [mainAllGaragesRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("select * from garage");
+
+  for (
+    let i =
+      document.querySelector("select[name=FromGarage]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromGarage]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromGarageCrt]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromGarageCrt]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  if (mainAllGaragesRows.length) {
+    for (let j = 0; j < mainAllGaragesRows.length; j++) {
+      let newOption1 = new Option(
+        mainAllGaragesRows[j]["Name"],
+        mainAllGaragesRows[j]["ID"]
+      );
+      let newOption2 = new Option(
+        mainAllGaragesRows[j]["Name"],
+        mainAllGaragesRows[j]["ID"]
+      );
+
+      document.querySelector("select[name=FromGarage]").options[
+        document.querySelector("select[name=FromGarage]").length
+      ] = newOption1;
+
+      document.querySelector("select[name=FromGarageCrt]").options[
+        document.querySelector("select[name=FromGarageCrt]").length
+      ] = newOption2;
+    }
+  }
+
+  // __________________________________________________ | Процесс отрисовки html.table
+  let construntBlock = `
+    <table class="table_col">
+      <colgroup>
+        <col style="background: #555555" />
+      </colgroup>
+      <tr>
+        <th>ID автомобиля</th>
+        <th>Модель</th>
+        <th>Номер</th>
+        <th>Гараж</th>
+      </tr>
+    `; // Размечаем шапку html.table
+
+  if (rows.length) {
+    for (let i = 0; i < rows.length; i++) {
+      let tempIDGarage = rows[i]["IDgarage"];
+      let tempNameGarage = "";
+
+      for (let j = 0; j < mainAllGaragesRows.length; j++) {
+        if (mainAllGaragesRows[j]["ID"] == tempIDGarage)
+          tempNameGarage = mainAllGaragesRows[j]["Name"];
+      }
+
+      construntBlock += `
+        <tr>
+          <td>${rows[i]["ID"]}</td>
+          <td>${rows[i]["Model"]}</td>
+          <td>${rows[i]["Number"]}</td>
+          <td>${tempNameGarage}</td>
+        </tr>
+        `;
+    }
+  } /* ELSE: Если массив "rows" не имеет в себе элементов */ else {
+    construntBlock += `<tr><td rowspan="1" colspan="4">Нету автомобилей</td></tr>`; // Размечаем информацию о отсутствии элементов
+  }
+  construntBlock += `</table>`; // Заканчиваем размечать html.table
+  document.querySelector(".all-autos .display-print").innerHTML =
+    construntBlock; // Окончательно рисуем результаты в родительском html.div
+  // __________________________________________________ | Процесс отрисовки html.table
+}
+// ____________________________________________________________ | Функция для загрузки всех автомобилей из таблицы MySQL и отображения в html.table
+
+// ____________________________________________________________ | Функция для изменения автомобиля
+async function RenameVehicle() {
+  let vehID = document.querySelector(".input-id-change-auto").value;
+  let vehModel = document.querySelector(".input-model-change-auto").value;
+  let vehNomer = document.querySelector(".input-nomer-change-auto").value;
+  let newVehicleGarageIndex = document.querySelector("select[name=FromGarage]")
+    .options.selectedIndex;
+  let newVehicleGarageValue = document.querySelector("select[name=FromGarage]")
+    .options[newVehicleGarageIndex].value;
+
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `update car set Model = '${vehModel}', Number = '${vehNomer}', IDgarage = '${newVehicleGarageValue}' WHERE id = ${vehID}`
+    );
+
+  if (rows["affectedRows"] /* MySQL вернул успешный результат */)
+    window.alert(`Автомобиль ID:${vehID} потерпел изменения`);
+  else window.alert(`Автомобиль по ID не найден для изменений`);
+
+  await ShowAllAutos();
+}
+// ____________________________________________________________ | Функция для изменения автомобиля
+
+// ____________________________________________________________ | Функция для создания автомобиля
+async function CreateVehicle() {
+  let newModel = document.querySelector(".input-model-create-auto").value;
+  let newNomer = document.querySelector(".input-nomer-create-auto").value;
+  let newVehicleToGarageIndex = document.querySelector(
+    "select[name=FromGarageCrt]"
+  ).options.selectedIndex;
+  let newVehicleToGarageValue = document.querySelector(
+    "select[name=FromGarageCrt]"
+  ).options[newVehicleToGarageIndex].value;
+
+  await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `insert into car (Model, Number, IDgarage) values ('${newModel}', '${newNomer}', '${newVehicleToGarageValue}')`
+    );
+
+  window.alert(`Автомобиль "${newNomer}" был создан`);
+
+  await ShowAllAutos();
+}
+// ____________________________________________________________ | Функция для создания автомобиля
+
+// ____________________________________________________________ | Функция для удаления автомобиля
+async function RemoveVehicle() {
+  let vehID = document.querySelector(".input-id-remove-auto").value;
+
+  let decisionRequest = confirm(
+    // Запрашиваем у пользователя программы подтверждение своих действий, ибо это опасно, так как все что связано с этим гаражом, будет удалено
+    "Вы действительно хотите удалить автомобиль?\n" +
+      "(Все связанные с этим автомобилем данные будут удалены (путевые листы (record)))\n" +
+      'Кнопка "OK" - удалит автомобиль ID: ' +
+      vehID +
+      ".\n" +
+      'Кнопка "Отмена" - закроет текущий диалог (автомобиль не будет удален)'
+  );
+
+  if (decisionRequest) {
+    let [rowsAllAutos] = await remote
+      .getGlobal("connectMySQL")
+      .execute(`SELECT * FROM car WHERE ID = ${vehID}`); // MySQL: Показать все автомобили по этому ID и сохранить в "rowsAllAutos"
+
+    if (rowsAllAutos.length) {
+      let [rowsAllRecords] = await remote
+        .getGlobal("connectMySQL")
+        .execute(`SELECT * FROM record where IDcar = ${vehID}`);
+
+      if (rowsAllRecords.length) {
+        let IDsAllRecords = []; // Массив для ID путевых листов, чтобы отсеять все остальное от объекта путевых листов, нам надо только порядковые номера в таблице MySQL
+
+        // Цикл, чтобы отсеять от целиковых объектов (объекты путевых листов) только ID
+        for (let z = 0; z < rowsAllRecords.length; z++) {
+          IDsAllRecords.push(rowsAllRecords[z]["ID"]); // Ложим ID в новый массив
+        }
+
+        // Цикл по новому массиву, в котором у нас только ID
+        for (let z = 0; z < IDsAllRecords.length; z++) {
+          await remote // удаляем все RECORDS по этому ID SHEETS
+            .getGlobal("connectMySQL")
+            .execute(`DELETE FROM record WHERE ID = ${IDsAllRecords[z]}`); // MySQL: Удаляем все путевые листы ("records") по ID текущей итерации цикла из нашего массива всех ID путевых листов. То есть, сколько в массиве элементов, то столько и есть этих путевых листов, то есть и столько и есть этих ID и столько раз сработает цикл и мы удалим все путевые листы ("record")
+        }
+      }
+
+      await remote
+        .getGlobal("connectMySQL")
+        .execute(`DELETE FROM car WHERE ID = ${vehID}`);
+
+      window.alert(`Автомобиль ID:${vehID} удален`);
+
+      await ShowAllAutos();
+    }
+  }
+}
+// ____________________________________________________________ | Функция для удаления автомобиля
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Все автомобили"

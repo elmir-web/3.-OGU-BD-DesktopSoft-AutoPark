@@ -204,6 +204,23 @@ body {
 
         .all-autos {
           display: none;
+
+          form[name="formFromChangedAuto"],
+          form[name="formFromCreateAuto"] {
+            // добавить создание
+            display: inline-block;
+
+            select[name="FromGarage"],
+            select[name="FromGarageCrt"] {
+              // добавить создание
+              background-color: #212121;
+              color: #ccc;
+              padding: 10px;
+              outline: none;
+              border: 0;
+              border-bottom: 3px solid #333;
+            }
+          }
         }
 
         .types-fuels-and-lubs {
