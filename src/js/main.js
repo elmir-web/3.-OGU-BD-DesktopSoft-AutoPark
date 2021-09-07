@@ -109,6 +109,20 @@ window.onload = function () {
     .querySelector(".butt-remove-auto")
     .addEventListener("click", async () => await RemoveVehicle());
   // ____________________________________________________________ | Навигация: "Все автомобили"
+
+  // ____________________________________________________________ | Навигация: "Все ГСМ"
+  document //                                             html.button."Изменить"
+    .querySelector(".butt-change-gsm")
+    .addEventListener("click", async () => await RenameGSM());
+
+  document //                                             html.button."Создать ГСМ"
+    .querySelector(".butt-create-gsm")
+    .addEventListener("click", async () => await CreateGSM());
+
+  document //                                             html.button."Удалить ГСМ"
+    .querySelector(".butt-remove-gsm")
+    .addEventListener("click", async () => await RemoveGSM());
+  // ____________________________________________________________ | Навигация: "Все ГСМ"
 };
 // ______________________________________________________________________ | Где все начинается
 
@@ -138,6 +152,7 @@ async function ShowDisplayStatus(statusName) {
   else if (
     statusName === ".types-fuels-and-lubs" /* html.button."Виды гсм" */
   ) {
+    await ShowAllGSM();
   }
   // показать ведомости
   else if (statusName === ".all-sheets" /* html.button."Ведомости" */) {
@@ -740,7 +755,7 @@ async function DeleteGarage() {
 async function ShowAllAutos() {
   const [rows] = await remote
     .getGlobal("connectMySQL")
-    .execute("select * from car"); // MySQL: Показать все гаражи из таблицы баз и сохранить результат в "rows"
+    .execute("select * from car"); // MySQL: Показать все авто из таблицы баз и сохранить результат в "rows"
 
   [mainAllGaragesRows] = await remote
     .getGlobal("connectMySQL")
@@ -927,3 +942,131 @@ async function RemoveVehicle() {
 }
 // ____________________________________________________________ | Функция для удаления автомобиля
 // ______________________________________________________________________ | [ЛОГИКА] Состояние "Все автомобили"
+
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Виды ГСМ"
+// ____________________________________________________________ | Функция для загрузки всех видов ГСМ
+async function ShowAllGSM() {
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("select * from gsm"); // MySQL: Показать все виды гсм из таблицы баз и сохранить результат в "rows"
+
+  // __________________________________________________ | Процесс отрисовки html.table
+  let construntBlock = `
+    <table class="table_col">
+      <colgroup>
+        <col style="background: #555555" />
+      </colgroup>
+      <tr>
+        <th>ID ГСМ</th>
+        <th>Название</th>
+        <th>Вес (кг)</th>
+      </tr>
+    `; // Размечаем шапку html.table
+
+  if (rows.length) {
+    for (let i = 0; i < rows.length; i++) {
+      construntBlock += `
+        <tr>
+          <td>${rows[i]["ID"]}</td>
+          <td>${rows[i]["Name"]}</td>
+          <td>${rows[i]["ForKilo"]}</td>
+        </tr>
+        `;
+    }
+  } /* ELSE: Если массив "rows" не имеет в себе элементов */ else {
+    construntBlock += `<tr><td rowspan="1" colspan="3">Нету видов ГСМ</td></tr>`; // Размечаем информацию о отсутствии элементов
+  }
+  construntBlock += `</table>`; // Заканчиваем размечать html.table
+  document.querySelector(".types-fuels-and-lubs .display-print").innerHTML =
+    construntBlock; // Окончательно рисуем результаты в родительском html.div
+  // __________________________________________________ | Процесс отрисовки html.table
+}
+// ____________________________________________________________ | Функция для загрузки всех видов ГСМ
+
+// ____________________________________________________________ | Функция для редактирования ГСМ
+async function RenameGSM() {
+  let idGSM = document.querySelector(".input-id-change-gsm").value;
+  let nameGSM = document.querySelector(".input-name-change-gsm").value;
+  let vesGSM = document.querySelector(".input-ves-change-gsm").value;
+
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `update gsm set Name = '${nameGSM}', 	ForKilo = '${vesGSM}' WHERE id = ${idGSM}`
+    );
+
+  if (rows["affectedRows"] /* MySQL вернул успешный результат */)
+    window.alert(`ГСМ ID:${idGSM} потерпел изменения`);
+  else window.alert(`ГСМ по ID не найден для изменений`);
+
+  await ShowAllGSM();
+}
+// ____________________________________________________________ | Функция для редактирования ГСМ
+
+// ____________________________________________________________ | Функция для создания ГСМ
+async function CreateGSM() {
+  let nameGSM = document.querySelector(".input-name-create-gsm").value;
+  let vesGSM = document.querySelector(".input-ves-create-gsm").value;
+
+  await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `insert into gsm (Name, ForKilo) values ('${nameGSM}', '${vesGSM}')`
+    );
+
+  window.alert(`ГСМ:${nameGSM} создан`);
+
+  await ShowAllGSM();
+}
+// ____________________________________________________________ | Функция для создания ГСМ
+
+async function RemoveGSM() {
+  let idGSM = document.querySelector(".input-id-remove-gsm").value;
+
+  let decisionRequest = confirm(
+    // Запрашиваем у пользователя программы подтверждение своих действий, ибо это опасно, так как все что связано с этим гаражом, будет удалено
+    "Вы действительно хотите удалить этот вид ГСМ?\n" +
+      "(Все связанные с этим видом ГСМ данные будут удалены (путевые листы (record)))\n" +
+      'Кнопка "OK" - удалит этот вид ГСМ ID: ' +
+      idGSM +
+      ".\n" +
+      'Кнопка "Отмена" - закроет текущий диалог (Вид ГСМ не будет удален)'
+  );
+
+  if (decisionRequest) {
+    let [rowsAllGSM] = await remote
+      .getGlobal("connectMySQL")
+      .execute(`select * from gsm where id = ${idGSM}`);
+
+    if (rowsAllGSM.length) {
+      let [rowsAllRecords] = await remote
+        .getGlobal("connectMySQL")
+        .execute(`SELECT * FROM record where IDgsm = ${idGSM}`);
+
+      if (rowsAllRecords.length) {
+        let IDsAllRecords = []; // Массив для ID путевых листов, чтобы отсеять все остальное от объекта путевых листов, нам надо только порядковые номера в таблице MySQL
+
+        // Цикл, чтобы отсеять от целиковых объектов (объекты путевых листов) только ID
+        for (let z = 0; z < rowsAllRecords.length; z++) {
+          IDsAllRecords.push(rowsAllRecords[z]["ID"]); // Ложим ID в новый массив
+        }
+
+        // Цикл по новому массиву, в котором у нас только ID
+        for (let z = 0; z < IDsAllRecords.length; z++) {
+          await remote // удаляем все RECORDS по этому ID SHEETS
+            .getGlobal("connectMySQL")
+            .execute(`DELETE FROM record WHERE ID = ${IDsAllRecords[z]}`); // MySQL: Удаляем все путевые листы ("records") по ID текущей итерации цикла из нашего массива всех ID путевых листов. То есть, сколько в массиве элементов, то столько и есть этих путевых листов, то есть и столько и есть этих ID и столько раз сработает цикл и мы удалим все путевые листы ("record")
+        }
+      }
+
+      await remote
+        .getGlobal("connectMySQL")
+        .execute(`DELETE FROM gsm WHERE ID = ${idGSM}`);
+
+      window.alert(`ГСМ ID:${idGSM} удален`);
+
+      await ShowAllGSM();
+    }
+  }
+}
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Виды ГСМ"
