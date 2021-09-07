@@ -36,6 +36,7 @@
           <button class="all-butt butt-navs butt-auto">Все автомобили</button>
           <button class="all-butt butt-navs butt-gsm">Виды ГСМ</button>
           <button class="all-butt butt-navs butt-sheet">Ведомости</button>
+          <button class="all-butt butt-navs butt-record">Путевые листы</button>
           <button class="all-butt butt-navs butt-worker">Работники</button>
         </div>
 
@@ -274,9 +275,159 @@
             </div>
           </div>
 
-          <div class="all-display all-sheets">все ведомости</div>
+          <div class="all-display all-sheets">
+            <div class="display-print">| тут будут все Ведомости |</div>
 
-          <div class="all-display all-works">все работники</div>
+            <h2>Отредактировать ведомость</h2>
+            <div class="display-control">
+              <form name="formFromChangedSheets">
+                <input
+                  type="text"
+                  class="input-id-change-sheet"
+                  placeholder="Введите ID ведомости"
+                />
+                <input
+                  type="text"
+                  class="input-nomer-change-sheet"
+                  placeholder="Введите № ведомости"
+                />
+                <input
+                  type="text"
+                  class="input-date-change-sheet"
+                  placeholder="Дата (ГГГГ-ММ-ДД)"
+                />
+                <select name="FromGarageSheet" size="1">
+                  <option value="444">чеиыпе</option>
+                  <option value="3333">аывыава</option>
+                  <option value="121212">4авыавыа</option>
+                  <option value="1222222222222">выф323</option>
+                </select>
+                <select name="FromPodpisantSheet" size="1">
+                  <option value="1temp">fdsfsdfs</option>
+                  <option value="2temp">fsdfsdfsdf</option>
+                  <option value="2temp">fsdfsdfsd</option>
+                  <option value="2temp">fdsfsdf</option>
+                </select>
+              </form>
+              <button class="all-butt butt-navs butt-change-sheets">
+                Изменить
+              </button>
+            </div>
+
+            <h2>Создать новую ведомость</h2>
+            <div class="display-control">
+              <input
+                type="text"
+                class="input-nomer-create-sheet"
+                placeholder="Введите № ведомости"
+              />
+              <input
+                type="text"
+                class="input-date-create-sheet"
+                placeholder="Дата (ГГГГ-ММ-ДД)"
+              />
+              <form name="formFromCreateSheets">
+                <select name="FromGarageSheetCrt" size="1">
+                  <option value="444">чеиыпе</option>
+                  <option value="3333">аывыава</option>
+                  <option value="121212">4авыавыа</option>
+                  <option value="1222222222222">выф323</option>
+                </select>
+                <select name="FromPodpisantSheetCrt" size="1">
+                  <option value="1temp">fdsfsdfs</option>
+                  <option value="2temp">fsdfsdfsdf</option>
+                  <option value="2temp">fsdfsdfsd</option>
+                  <option value="2temp">fdsfsdf</option>
+                </select>
+              </form>
+              <button class="all-butt butt-navs butt-create-sheets">
+                Создать
+              </button>
+            </div>
+
+            <h2>Создать новую ведомость</h2>
+            <div class="display-control">
+              <input
+                type="text"
+                class="input-id-remove-sheet"
+                placeholder="Введите ID ведомости"
+              />
+              <button class="all-butt butt-navs butt-remove-sheet">
+                Удалить ведомость
+              </button>
+            </div>
+          </div>
+
+          <div class="all-display all-records">все путевые листы</div>
+
+          <div class="all-display all-works">
+            <div class="display-print">| тут будут все сотрудники |</div>
+
+            <h2>Отредактировать сотрудника</h2>
+            <div class="display-control">
+              <input
+                type="text"
+                class="input-id-change-worker"
+                placeholder="Введите ID сотрудника"
+              />
+              <input
+                type="text"
+                class="input-fio-change-worker"
+                placeholder="Введите Фамилию и инициалы"
+              />
+              <form name="formFromChangedWorker">
+                <select name="FromFunctions" size="1">
+                  <option value="1">Водитель</option>
+                  <option value="2">Подписант</option>
+                </select>
+                <select name="FromChangeBase" size="1">
+                  <option value="1temp">fdsfsdfs</option>
+                  <option value="2temp">fsdfsdfsdf</option>
+                  <option value="2temp">fsdfsdfsd</option>
+                  <option value="2temp">fdsfsdf</option>
+                </select>
+              </form>
+              <button class="all-butt butt-navs butt-change-worker">
+                Изменить
+              </button>
+            </div>
+
+            <h2>Создать нового сотрудника</h2>
+            <div class="display-control">
+              <input
+                type="text"
+                class="input-fio-create-worker"
+                placeholder="Введите Фамилию и инициалы"
+              />
+              <form name="formFromCreatedWorker">
+                <select name="FromFunctionsCrt" size="1">
+                  <option value="1">Водитель</option>
+                  <option value="2">Подписант</option>
+                </select>
+                <select name="FromCreateBase" size="1">
+                  <option value="1temp">fdsfsdfs</option>
+                  <option value="2temp">fsdfsdfsdf</option>
+                  <option value="2temp">fsdfsdfsd</option>
+                  <option value="2temp">fdsfsdf</option>
+                </select>
+              </form>
+              <button class="all-butt butt-navs butt-create-worker">
+                Создать
+              </button>
+            </div>
+
+            <h2>Удалить сотрудника</h2>
+            <div class="display-control">
+              <input
+                type="text"
+                class="input-id-remove-worker"
+                placeholder="Введите ID сотрудника"
+              />
+              <button class="all-butt butt-navs butt-remove-worker">
+                Удалить сотрудника
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

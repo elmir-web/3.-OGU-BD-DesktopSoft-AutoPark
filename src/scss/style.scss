@@ -229,10 +229,89 @@ body {
 
         .all-sheets {
           display: none;
+
+          form[name="formFromChangedSheets"] {
+            display: flex;
+            flex-direction: column;
+
+            .input-id-change-sheet,
+            .input-nomer-change-sheet,
+            .input-date-change-sheet {
+              margin-bottom: 10px;
+            }
+
+            select[name="FromGarageSheet"],
+            select[name="FromPodpisantSheet"] {
+              width: 100%;
+              background-color: #212121;
+              color: #ccc;
+              padding: 10px;
+              outline: none;
+              border: 0;
+              border-bottom: 3px solid #333;
+              margin-bottom: 10px;
+            }
+          }
+
+          form[name="formFromCreateSheets"] {
+            display: inline-block;
+
+            select[name="FromGarageSheetCrt"],
+            select[name="FromPodpisantSheetCrt"] {
+              background-color: #212121;
+              color: #ccc;
+              padding: 10px;
+              outline: none;
+              border: 0;
+              border-bottom: 3px solid #333;
+              margin-bottom: 10px;
+            }
+          }
+
+          .butt-change-sheets {
+            width: 100%;
+          }
+        }
+
+        .all-records {
+          display: none;
         }
 
         .all-works {
           display: none;
+
+          form[name="formFromChangedWorker"],
+          form[name="formFromCreatedWorker"] {
+            display: inline-block;
+            select[name="FromFunctions"],
+            select[name="FromChangeBase"],
+            select[name="FromFunctionsCrt"],
+            select[name="FromCreateBase"] {
+              background-color: #212121;
+              color: #ccc;
+              padding: 10px;
+              outline: none;
+              border: 0;
+              border-bottom: 3px solid #333;
+            }
+          }
+
+          // form[name="formFromChangedWorker"],
+          // form[name="formFromCreatedWorker"] {
+          //   // добавить создание
+          //   display: inline-block;
+
+          //   select[name="FromFunctions"],
+          //   select[name="FromFunctionsCrt"] {
+          //     // добавить создание
+          //     background-color: #212121;
+          //     color: #ccc;
+          //     padding: 10px;
+          //     outline: none;
+          //     border: 0;
+          //     border-bottom: 3px solid #333;
+          //   }
+          // }
         }
       }
     }

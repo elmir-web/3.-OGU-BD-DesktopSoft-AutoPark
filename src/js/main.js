@@ -1,11 +1,13 @@
 // ______________________________________________________________________ | Расширения
 const remote = require("electron").remote;
 const wnd = remote.getCurrentWindow();
+let moment = require("moment");
 // ______________________________________________________________________ | Расширения
 
 // ______________________________________________________________________ | Глобальные переменные файла
 let mainAllBasesRows = [];
 let mainAllGaragesRows = [];
+let mainAllWorkersRows = [];
 // ______________________________________________________________________ | Глобальные переменные файла
 
 // ______________________________________________________________________ | Где все начинается
@@ -54,6 +56,13 @@ window.onload = function () {
     .addEventListener(
       "click",
       async () => await ShowDisplayStatus(".all-sheets")
+    );
+
+  document //                                             html.button."Путевые листы"
+    .querySelector(".butt-record")
+    .addEventListener(
+      "click",
+      async () => await ShowDisplayStatus(".all-records")
     );
 
   document //                                             html.button."Работники"
@@ -110,7 +119,7 @@ window.onload = function () {
     .addEventListener("click", async () => await RemoveVehicle());
   // ____________________________________________________________ | Навигация: "Все автомобили"
 
-  // ____________________________________________________________ | Навигация: "Все ГСМ"
+  // ____________________________________________________________ | Навигация: "Виды ГСМ"
   document //                                             html.button."Изменить"
     .querySelector(".butt-change-gsm")
     .addEventListener("click", async () => await RenameGSM());
@@ -122,7 +131,38 @@ window.onload = function () {
   document //                                             html.button."Удалить ГСМ"
     .querySelector(".butt-remove-gsm")
     .addEventListener("click", async () => await RemoveGSM());
-  // ____________________________________________________________ | Навигация: "Все ГСМ"
+  // ____________________________________________________________ | Навигация: "Виды ГСМ"
+
+  // ____________________________________________________________ | Навигация: "Ведомости"
+  // ____________________________________________________________ | Навигация: "Ведомости"
+
+  // ____________________________________________________________ | Навигация: "Работники"
+  document //                                             html.button."Изменить"
+    .querySelector(".butt-change-worker")
+    .addEventListener("click", async () => await RenameWorkers());
+
+  document //                                             html.button."Создать"
+    .querySelector(".butt-create-worker")
+    .addEventListener("click", async () => await CreateWorkers());
+
+  document //                                             html.button."Удалить сотрудника"
+    .querySelector(".butt-remove-worker")
+    .addEventListener("click", async () => await RemoveWorkers());
+  // ____________________________________________________________ | Навигация: "Работники"
+
+  // ____________________________________________________________ | Навигация: "Ведомости"
+  document //                                             html.button."Изменить"
+    .querySelector(".butt-change-sheets")
+    .addEventListener("click", async () => await RenameSheet());
+
+  document //                                             html.button."Создать"
+    .querySelector(".butt-create-sheets")
+    .addEventListener("click", async () => await CreateSheet());
+
+  document //                                             html.button."Удалить ведомость"
+    .querySelector(".butt-remove-sheet")
+    .addEventListener("click", async () => await RemoveSheet());
+  // ____________________________________________________________ | Навигация: "Ведомости"
 };
 // ______________________________________________________________________ | Где все начинается
 
@@ -136,6 +176,7 @@ async function ShowDisplayStatus(statusName) {
     document.querySelector(".all-autos").style.display = "none";
     document.querySelector(".types-fuels-and-lubs").style.display = "none";
     document.querySelector(".all-sheets").style.display = "none";
+    document.querySelector(".all-records").style.display = "none";
     document.querySelector(".all-works").style.display = "none";
     return;
   } else if (statusName === ".all-base" /* html.button."Все базы" */)
@@ -156,9 +197,14 @@ async function ShowDisplayStatus(statusName) {
   }
   // показать ведомости
   else if (statusName === ".all-sheets" /* html.button."Ведомости" */) {
+    await ShowAllSheets();
+  }
+  // показать путевые листы
+  else if (statusName === ".all-records" /* html.button."Путевые листы" */) {
   }
   // показать всех работников
   else if (statusName === ".all-works" /* html.button."Работники" */) {
+    await ShowAllWorkers();
   }
 
   document.querySelector(".nav").style.display = "none"; // скрыть навигацию
@@ -1020,6 +1066,7 @@ async function CreateGSM() {
 }
 // ____________________________________________________________ | Функция для создания ГСМ
 
+// ____________________________________________________________ | Функция для удаления ГСМ
 async function RemoveGSM() {
   let idGSM = document.querySelector(".input-id-remove-gsm").value;
 
@@ -1069,4 +1116,506 @@ async function RemoveGSM() {
     }
   }
 }
+// ____________________________________________________________ | Функция для удаления ГСМ
 // ______________________________________________________________________ | [ЛОГИКА] Состояние "Виды ГСМ"
+
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Работники"
+// ____________________________________________________________ | Функция для загрузки всех сотрудников
+async function ShowAllWorkers() {
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute(`SELECT * FROM worker`);
+
+  [mainAllBasesRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("select * from base"); // MySQL: Показать все базы из таблицы баз и сохранить результат в "mainAllBasesRows"
+
+  for (
+    let i =
+      document.querySelector("select[name=FromChangeBase]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromChangeBase]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromCreateBase]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromCreateBase]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  // Если массив не пустой (базы существуют, хоть одна)
+  if (mainAllBasesRows.length) {
+    // Цикл на элементы массива (на каждую базу своя итерация)
+    for (let i = 0; i < mainAllBasesRows.length; i++) {
+      /*
+      Создаем свои варианты для выпадающих списков
+      */
+
+      let newOption1 = new Option(
+        mainAllBasesRows[i]["Name"],
+        mainAllBasesRows[i]["ID"]
+      );
+      let newOption2 = new Option(
+        mainAllBasesRows[i]["Name"],
+        mainAllBasesRows[i]["ID"]
+      );
+
+      document.querySelector("select[name=FromChangeBase]").options[
+        document.querySelector("select[name=FromChangeBase]").length
+      ] = newOption1;
+
+      document.querySelector("select[name=FromCreateBase]").options[
+        document.querySelector("select[name=FromCreateBase]").length
+      ] = newOption2;
+    }
+  }
+
+  // __________________________________________________ | Процесс отрисовки html.table
+  let construntBlock = `
+    <table class="table_col">
+      <colgroup>
+        <col style="background: #555555" />
+      </colgroup>
+      <tr>
+        <th>ID сотрудника</th>
+        <th>Фамилия, инициалы</th>
+        <th>Должность</th>
+        <th>Название базы</th>
+      </tr>
+    `; // Размечаем шапку html.table
+
+  if (rows.length) {
+    for (let i = 0; i < rows.length; i++) {
+      let tempIDBase = rows[i]["IDbase"];
+      let tempNameBase = "";
+
+      for (let j = 0; j < mainAllBasesRows.length; j++) {
+        if (mainAllBasesRows[j]["ID"] === tempIDBase)
+          tempNameBase = mainAllBasesRows[j]["Name"];
+      }
+
+      construntBlock += `
+        <tr>
+          <td>${rows[i]["ID"]}</td>
+          <td>${rows[i]["FIO"]}</td>
+          <td>${rows[i]["Function"] === 1 ? `Водитель` : `Подписант`}</td>
+          <td>${tempNameBase}</td>
+        </tr>
+        `;
+    }
+  } /* ELSE: Если массив "rows" не имеет в себе элементов */ else {
+    construntBlock += `<tr><td rowspan="1" colspan="4">Нету сотрудников</td></tr>`; // Размечаем информацию о отсутствии элементов
+  }
+  construntBlock += `</table>`; // Заканчиваем размечать html.table
+  document.querySelector(".all-works .display-print").innerHTML =
+    construntBlock; // Окончательно рисуем результаты в родительском html.div
+  // __________________________________________________ | Процесс отрисовки html.table
+}
+// ____________________________________________________________ | Функция для загрузки всех сотрудников
+
+// ____________________________________________________________ | Функция для редактирования сотрудника
+async function RenameWorkers() {
+  let workerID = document.querySelector(".input-id-change-worker").value;
+  let workerFIO = document.querySelector(".input-fio-change-worker").value;
+
+  let newWorkerFunctionIndex = document.querySelector(
+    "select[name=FromFunctions]"
+  ).options.selectedIndex;
+  let newWorkerFunctionValue = document.querySelector(
+    "select[name=FromFunctions]"
+  ).options[newWorkerFunctionIndex].value;
+
+  let newWorkerBaseIndex = document.querySelector("select[name=FromChangeBase]")
+    .options.selectedIndex;
+  let newWorkerBaseValue = document.querySelector("select[name=FromChangeBase]")
+    .options[newWorkerBaseIndex].value;
+
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `UPDATE worker SET FIO = '${workerFIO}', worker.Function = '${newWorkerFunctionValue}', IDbase = '${newWorkerBaseValue}' WHERE ID = ${workerID}`
+    );
+
+  if (rows["affectedRows"] /* MySQL вернул успешный результат */)
+    window.alert(`Сотрудник ID:${workerID} потерпел изменения`);
+  else window.alert(`Сотрудник по ID не найден для изменений`);
+
+  await ShowAllWorkers();
+}
+// ____________________________________________________________ | Функция для редактирования сотрудника
+
+// ____________________________________________________________ | Функция для создания сотрудника
+async function CreateWorkers() {
+  let workerFIO = document.querySelector(".input-fio-create-worker").value;
+
+  let newWorkerFunctionIndex = document.querySelector(
+    "select[name=FromFunctionsCrt]"
+  ).options.selectedIndex;
+  let newWorkerFunctionValue = document.querySelector(
+    "select[name=FromFunctionsCrt]"
+  ).options[newWorkerFunctionIndex].value;
+
+  let newWorkerBaseIndex = document.querySelector("select[name=FromCreateBase]")
+    .options.selectedIndex;
+  let newWorkerBaseValue = document.querySelector("select[name=FromCreateBase]")
+    .options[newWorkerBaseIndex].value;
+
+  await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `insert into worker (FIO, worker.Function, IDbase) values ('${workerFIO}', '${newWorkerFunctionValue}', '${newWorkerBaseValue}')`
+    );
+
+  window.alert(`Сотрудник:${workerFIO} создан`);
+
+  await ShowAllWorkers();
+}
+// ____________________________________________________________ | Функция для создания сотрудника
+
+// ____________________________________________________________ | Функция для удаления сотрудника
+async function RemoveWorkers() {
+  let workerID = document.querySelector(".input-id-remove-worker").value;
+
+  const [rowsWorker] = await remote
+    .getGlobal("connectMySQL")
+    .execute(`SELECT * FROM worker where id = ${workerID}`);
+
+  if (rowsWorker.length) {
+    let funcs = [];
+
+    if (rowsWorker[0]["Function"] === 1) {
+      funcs[0] = `Водитель`;
+      funcs[1] = `Путевые листы (records)`;
+    } else if (rowsWorker[0]["Function"] === 2) {
+      funcs[0] = `Подписант`;
+      funcs[1] = `Ведомости (sheets)`;
+    }
+
+    let decisionRequest = confirm(`
+    Вы действительно хотите удалить этого сотрудника?\n
+    Должность: ${funcs[0]}\n
+    Внимание!:\n
+    \n
+    Все связанные с ним "${funcs[1]}" будут уничтожены!\n
+    \n
+    Нажатие кнопки "OK" - удалит сотрудника.\n
+    Нажатие кнопки "Отмена" - закроет диалог (сотрудник не будет удален).
+    `);
+
+    if (decisionRequest) {
+      // водитель
+      if (rowsWorker[0]["Function"] === 1) {
+        const [rowsRecords] = await remote
+          .getGlobal("connectMySQL")
+          .execute(`SELECT * FROM record where IDdriver = ${workerID}`);
+
+        if (rowsRecords.length) {
+          let IDsAllRecords = [];
+
+          for (let i = 0; i < rowsRecords.length; i++) {
+            IDsAllRecords.push(rowsRecords[i]["ID"]);
+          }
+
+          for (let i = 0; i < IDsAllRecords.length; i++) {
+            await remote
+              .getGlobal("connectMySQL")
+              .execute(`DELETE FROM record WHERE ID = ${IDsAllRecords[i]}`);
+          }
+        }
+      } /* подписант */ else if (rowsWorker[0]["Function"] === 2) {
+        const [rowsSheets] = await remote
+          .getGlobal("connectMySQL")
+          .execute(`SELECT * FROM sheet where IDsigner = ${workerID}`);
+
+        if (rowsSheets.length) {
+          let IDsAllSheets = [];
+
+          for (let i = 0; i < rowsSheets.length; i++) {
+            IDsAllSheets.push(rowsSheets[i]["ID"]);
+          }
+
+          for (let i = 0; i < IDsAllSheets.length; i++) {
+            await remote
+              .getGlobal("connectMySQL")
+              .execute(`DELETE FROM sheet WHERE ID = ${IDsAllSheets[i]}`);
+          }
+        }
+      }
+
+      await remote
+        .getGlobal("connectMySQL")
+        .execute(`DELETE FROM worker WHERE ID = ${workerID}`);
+
+      await ShowAllWorkers();
+    }
+  }
+}
+// ____________________________________________________________ | Функция для удаления сотрудника
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Работники"
+
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Ведомости"
+// ____________________________________________________________ | Функция для загрузки всех ведомостей
+async function ShowAllSheets() {
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("select * from sheet");
+
+  [mainAllGaragesRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("select * from garage");
+
+  [mainAllWorkersRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute(`select * from worker WHERE worker.Function = 2`);
+
+  for (
+    let i =
+      document.querySelector("select[name=FromGarageSheet]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromGarageSheet]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromPodpisantSheet]").options.length -
+      1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromPodpisantSheet]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromGarageSheetCrt]").options.length -
+      1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromGarageSheetCrt]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromPodpisantSheetCrt]").options
+        .length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromPodpisantSheetCrt]").options[i] =
+      null;
+  } // Очищаем выпадающие списки
+
+  if (mainAllGaragesRows.length) {
+    for (let j = 0; j < mainAllGaragesRows.length; j++) {
+      let newOption1 = new Option(
+        mainAllGaragesRows[j]["Name"],
+        mainAllGaragesRows[j]["ID"]
+      );
+      let newOption2 = new Option(
+        mainAllGaragesRows[j]["Name"],
+        mainAllGaragesRows[j]["ID"]
+      );
+
+      document.querySelector("select[name=FromGarageSheet]").options[
+        document.querySelector("select[name=FromGarageSheet]").length
+      ] = newOption1;
+
+      document.querySelector("select[name=FromGarageSheetCrt]").options[
+        document.querySelector("select[name=FromGarageSheetCrt]").length
+      ] = newOption2;
+    }
+  }
+
+  if (mainAllWorkersRows.length) {
+    for (let j = 0; j < mainAllWorkersRows.length; j++) {
+      let newOption1 = new Option(
+        mainAllWorkersRows[j]["FIO"],
+        mainAllWorkersRows[j]["ID"]
+      );
+      let newOption2 = new Option(
+        mainAllWorkersRows[j]["FIO"],
+        mainAllWorkersRows[j]["ID"]
+      );
+
+      document.querySelector("select[name=FromPodpisantSheet]").options[
+        document.querySelector("select[name=FromPodpisantSheet]").length
+      ] = newOption1;
+
+      document.querySelector("select[name=FromPodpisantSheetCrt]").options[
+        document.querySelector("select[name=FromPodpisantSheetCrt]").length
+      ] = newOption2;
+    }
+  }
+
+  // __________________________________________________ | Процесс отрисовки html.table
+  let construntBlock = `
+      <table class="table_col">
+        <colgroup>
+          <col style="background: #555555" />
+        </colgroup>
+        <tr>
+          <th>ID ведомости</th>
+          <th>№ ведомости</th>
+          <th>Дата подписания</th>
+          <th>Гараж</th>
+          <th>Подписант</th>
+        </tr>
+      `; // Размечаем шапку html.table
+
+  if (rows.length) {
+    for (let i = 0; i < rows.length; i++) {
+      let tempIDGarage = rows[i]["IDgarage"];
+      let tempNameGarage = "";
+
+      let tempIDWorker = rows[i]["IDsigner"];
+      let tempFIOWorker = "";
+
+      for (let j = 0; j < mainAllGaragesRows.length; j++) {
+        if (mainAllGaragesRows[j]["ID"] == tempIDGarage)
+          tempNameGarage = mainAllGaragesRows[j]["Name"];
+      }
+
+      for (let j = 0; j < mainAllWorkersRows.length; j++) {
+        if (mainAllWorkersRows[j]["ID"] === tempIDWorker)
+          tempFIOWorker = mainAllWorkersRows[j]["FIO"];
+      }
+
+      construntBlock += `
+            <tr>
+              <td>${rows[i]["ID"]}</td>
+              <td>${rows[i]["NumberSheet"]}</td>
+              <td>${moment(rows[i]["DateSheet"]).format("YYYY-MM-DD")}</td>
+              <td>${tempNameGarage}</td>
+              <td>${tempFIOWorker}</td>
+            </tr>
+            `;
+    }
+  } else {
+    construntBlock += `<tr><td rowspan="1" colspan="5">Нету ведомостей</td></tr>`; // Размечаем информацию о отсутствии элементов
+  }
+  construntBlock += `</table>`; // Заканчиваем размечать html.table
+  document.querySelector(".all-sheets .display-print").innerHTML =
+    construntBlock; // Окончательно рисуем результаты в родительском html.div
+  // __________________________________________________ | Процесс отрисовки html.table
+}
+// ____________________________________________________________ | Функция для загрузки всех ведомостей
+
+// ____________________________________________________________ | Функция для редактирования ведомости
+async function RenameSheet() {
+  let idSheets = document.querySelector(".input-id-change-sheet").value;
+  let nomerSheets = document.querySelector(".input-nomer-change-sheet").value;
+  let dateSheets = document.querySelector(".input-date-change-sheet").value;
+
+  let newSheetGarageIndex = document.querySelector(
+    "select[name=FromGarageSheet]"
+  ).options.selectedIndex;
+  let newSheetGarageValue = document.querySelector(
+    "select[name=FromGarageSheet]"
+  ).options[newSheetGarageIndex].value;
+
+  let newSheetPodpisantIndex = document.querySelector(
+    "select[name=FromPodpisantSheet]"
+  ).options.selectedIndex;
+  let newSheetPodpisantValue = document.querySelector(
+    "select[name=FromPodpisantSheet]"
+  ).options[newSheetPodpisantIndex].value;
+
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `UPDATE sheet SET NumberSheet = '${nomerSheets}', DateSheet = '${dateSheets}', IDgarage = '${newSheetGarageValue}', IDsigner = '${newSheetPodpisantValue}' WHERE ID = ${idSheets}`
+    );
+
+  if (rows["affectedRows"] /* MySQL вернул успешный результат */)
+    window.alert(`Ведомость ID:${idSheets} потерпела изменения`);
+  else window.alert(`Ведомость по ID не найдена для изменений`);
+
+  await ShowAllSheets();
+}
+// ____________________________________________________________ | Функция для редактирования ведомости
+
+// ____________________________________________________________ | Функция для создания ведомости
+async function CreateSheet() {
+  let nomerSheets = document.querySelector(".input-nomer-create-sheet").value;
+  let dateSheets = document.querySelector(".input-date-create-sheet").value;
+
+  let newSheetGarageIndex = document.querySelector(
+    "select[name=FromGarageSheetCrt]"
+  ).options.selectedIndex;
+  let newSheetGarageValue = document.querySelector(
+    "select[name=FromGarageSheetCrt]"
+  ).options[newSheetGarageIndex].value;
+
+  let newSheetPodpisantIndex = document.querySelector(
+    "select[name=FromPodpisantSheetCrt]"
+  ).options.selectedIndex;
+  let newSheetPodpisantValue = document.querySelector(
+    "select[name=FromPodpisantSheetCrt]"
+  ).options[newSheetPodpisantIndex].value;
+
+  await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `insert into sheet (NumberSheet, DateSheet, IDgarage, IDsigner) values ('${nomerSheets}', '${dateSheets}', '${newSheetGarageValue}', '${newSheetPodpisantValue}')`
+    );
+
+  window.alert(`Ведомость:${nomerSheets} создана`);
+
+  await ShowAllSheets();
+}
+// ____________________________________________________________ | Функция для создания ведомости
+
+// ____________________________________________________________ | Функция для удаления ведомости
+async function RemoveSheet() {
+  let idSheets = document.querySelector(".input-id-remove-sheet").value;
+
+  let decisionRequest = confirm(`
+    Вы действительно хотите удалить эту ведомость?\n
+    Внимание!:\n
+    Все связанные с ней путевые листы будут уничтожены!\n
+    Нажатие кнопки "OK" - удалит ведомость.\n
+    Нажатие кнопки "Отмена" - закроет диалог (ведомость не будет удален).
+    `);
+
+  if (decisionRequest) {
+    const [rowsSheets] = await remote
+      .getGlobal("connectMySQL")
+      .execute(`SELECT * FROM sheet where ID = ${idSheets}`);
+
+    if (rowsSheets.length) {
+      const [rowsRecords] = await remote
+        .getGlobal("connectMySQL")
+        .execute(`SELECT * FROM record where IDsheet = ${idSheets}`);
+
+      if (rowsRecords.length) {
+        let IDsAllRecords = [];
+
+        for (let i = 0; i < rowsRecords.length; i++) {
+          IDsAllRecords.push(rowsRecords[i]["ID"]);
+        }
+
+        for (let i = 0; i < IDsAllRecords.length; i++) {
+          await remote
+            .getGlobal("connectMySQL")
+            .execute(`DELETE FROM record WHERE ID = ${IDsAllRecords[i]}`);
+        }
+      }
+
+      await remote
+        .getGlobal("connectMySQL")
+        .execute(`DELETE FROM sheet WHERE ID = ${idSheets}`);
+    }
+
+    await ShowAllSheets();
+  }
+}
+// ____________________________________________________________ | Функция для удаления ведомости
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Ведомости"

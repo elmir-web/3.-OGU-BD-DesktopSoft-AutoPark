@@ -255,6 +255,78 @@ body .main-app .main .display .all-sheets {
   display: none;
 }
 
+body .main-app .main .display .all-sheets form[name="formFromChangedSheets"] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+body .main-app .main .display .all-sheets form[name="formFromChangedSheets"] .input-id-change-sheet,
+body .main-app .main .display .all-sheets form[name="formFromChangedSheets"] .input-nomer-change-sheet,
+body .main-app .main .display .all-sheets form[name="formFromChangedSheets"] .input-date-change-sheet {
+  margin-bottom: 10px;
+}
+
+body .main-app .main .display .all-sheets form[name="formFromChangedSheets"] select[name="FromGarageSheet"],
+body .main-app .main .display .all-sheets form[name="formFromChangedSheets"] select[name="FromPodpisantSheet"] {
+  width: 100%;
+  background-color: #212121;
+  color: #ccc;
+  padding: 10px;
+  outline: none;
+  border: 0;
+  border-bottom: 3px solid #333;
+  margin-bottom: 10px;
+}
+
+body .main-app .main .display .all-sheets form[name="formFromCreateSheets"] {
+  display: inline-block;
+}
+
+body .main-app .main .display .all-sheets form[name="formFromCreateSheets"] select[name="FromGarageSheetCrt"],
+body .main-app .main .display .all-sheets form[name="formFromCreateSheets"] select[name="FromPodpisantSheetCrt"] {
+  background-color: #212121;
+  color: #ccc;
+  padding: 10px;
+  outline: none;
+  border: 0;
+  border-bottom: 3px solid #333;
+  margin-bottom: 10px;
+}
+
+body .main-app .main .display .all-sheets .butt-change-sheets {
+  width: 100%;
+}
+
+body .main-app .main .display .all-records {
+  display: none;
+}
+
 body .main-app .main .display .all-works {
   display: none;
+}
+
+body .main-app .main .display .all-works form[name="formFromChangedWorker"],
+body .main-app .main .display .all-works form[name="formFromCreatedWorker"] {
+  display: inline-block;
+}
+
+body .main-app .main .display .all-works form[name="formFromChangedWorker"] select[name="FromFunctions"],
+body .main-app .main .display .all-works form[name="formFromChangedWorker"] select[name="FromChangeBase"],
+body .main-app .main .display .all-works form[name="formFromChangedWorker"] select[name="FromFunctionsCrt"],
+body .main-app .main .display .all-works form[name="formFromChangedWorker"] select[name="FromCreateBase"],
+body .main-app .main .display .all-works form[name="formFromCreatedWorker"] select[name="FromFunctions"],
+body .main-app .main .display .all-works form[name="formFromCreatedWorker"] select[name="FromChangeBase"],
+body .main-app .main .display .all-works form[name="formFromCreatedWorker"] select[name="FromFunctionsCrt"],
+body .main-app .main .display .all-works form[name="formFromCreatedWorker"] select[name="FromCreateBase"] {
+  background-color: #212121;
+  color: #ccc;
+  padding: 10px;
+  outline: none;
+  border: 0;
+  border-bottom: 3px solid #333;
 }

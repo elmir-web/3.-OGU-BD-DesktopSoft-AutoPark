@@ -14,5 +14,25 @@ sheet     car
 record
 ВЫШЕ КАК ПОЧИСТИТЬ ГАРАЖИ
 
+      worker
+      /    \
+record     sheet
+ВЫШЕ КАК ПОЧИСТИТЬ СОТРУДНИКОВ
 
+
+// создаем путевой лист
+INSERT INTO `record` (`ID`, `IDsheet`, `IDcar`, `IDdriver`, `NumberPL`, `IDgsm`, `Liter`, `Kilo`) VALUES (NULL, '3', '5', '3', '6', '2', '10.000', '8.500')
+
+// для версии 8
+SELECT `garage`.`Name`, `gsm`.`Name`, SUM(record.Liter) as Liter, SUM(record.Liter)*ForKilo as Kilo
+FROM `gsm`
+INNER JOIN `record` ON `gsm`.`ID` = `record`.`IDgsm`
+INNER JOIN `sheet` ON `sheet`.`ID` = `record`.`IDsheet`
+INNER JOIN `garage` ON garage.`ID` = `sheet`.`IDgarage`
+WHERE sheet.DateSheet = '2021-09-01'
+and garage.ID = 1
+GROUP BY `garage`.`Name`, `gsm`.`Name`
+
+// программа при старте делает запрос
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
