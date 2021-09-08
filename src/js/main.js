@@ -8,6 +8,9 @@ let moment = require("moment");
 let mainAllBasesRows = [];
 let mainAllGaragesRows = [];
 let mainAllWorkersRows = [];
+let mainAllSheetsRows = [];
+let mainAllCarsRows = [];
+let mainAllGSMRows = [];
 // ______________________________________________________________________ | Глобальные переменные файла
 
 // ______________________________________________________________________ | Где все начинается
@@ -76,6 +79,22 @@ window.onload = function () {
     .querySelector(".butt-to-navs")
     .addEventListener("click", async () => await ShowDisplayStatus(".nav"));
   // ____________________________________________________________ | [КНОПКИ] Навигация в интерфейсе
+
+  // ____________________________________________________________ | [КНОПКИ] Отчеты в компании
+  document //                                             html.button."ГСМ за день по гаражу"
+    .querySelector(".butt-gsmforday")
+    .addEventListener(
+      "click",
+      async () => await ShowDisplayStatus(".gsm-for-day-garage")
+    );
+
+  document //                                             html.button."Отчет по ведомостям"
+    .querySelector(".butt-sheets")
+    .addEventListener(
+      "click",
+      async () => await ShowDisplayStatus(".sheets-request-report")
+    );
+  // ____________________________________________________________ | [КНОПКИ] Отчеты в компании
 
   // ____________________________________________________________ | Навигация: "Все базы"
   document //                                             html.button."Изменить"
@@ -163,6 +182,40 @@ window.onload = function () {
     .querySelector(".butt-remove-sheet")
     .addEventListener("click", async () => await RemoveSheet());
   // ____________________________________________________________ | Навигация: "Ведомости"
+
+  // ____________________________________________________________ | Навигация: "Путевые листы"
+  document //                                             html.button."Изменить"
+    .querySelector(".butt-change-records")
+    .addEventListener("click", async () => await RenameRecord());
+
+  document //                                             html.button."Создать путевой лист"
+    .querySelector(".butt-crt-records")
+    .addEventListener("click", async () => await CreateRecord());
+
+  document //                                             html.button."Удалить путевой лист"
+    .querySelector(".butt-remove-records")
+    .addEventListener("click", async () => await RemoveRecord());
+  // ____________________________________________________________ | Навигация: "Путевые листы"
+
+  // ____________________________________________________________ | Навигация: "ГСМ за день по гаражу"
+  document //                                             html.button."Загрузить отчет"
+    .querySelector(".butt-request-report-gsm-day-garage")
+    .addEventListener("click", async () => await RequestReportGSMDay());
+
+  document //                                             html.button."Очистить таблицу"
+    .querySelector(".butt-clear-report-gsm-day-garage")
+    .addEventListener("click", async () => await ShowGSMDayGarage());
+  // ____________________________________________________________ | Навигация: "ГСМ за день по гаражу"
+
+  // ____________________________________________________________ | Навигация: "Отчет по ведомостям"
+  document //                                             html.button."Загрузить отчет"
+    .querySelector(".butt-request-report-sheet")
+    .addEventListener("click", async () => await RequestReportSheet());
+
+  document //                                             html.button."Очистить таблицу"
+    .querySelector(".butt-clear-report-sheet")
+    .addEventListener("click", async () => await ShowRequestReportSheet());
+  // ____________________________________________________________ | Навигация: "Отчет по ведомостям"
 };
 // ______________________________________________________________________ | Где все начинается
 
@@ -178,6 +231,8 @@ async function ShowDisplayStatus(statusName) {
     document.querySelector(".all-sheets").style.display = "none";
     document.querySelector(".all-records").style.display = "none";
     document.querySelector(".all-works").style.display = "none";
+    document.querySelector(".gsm-for-day-garage").style.display = "none";
+    document.querySelector(".sheets-request-report").style.display = "none";
     return;
   } else if (statusName === ".all-base" /* html.button."Все базы" */)
     await showAllBase();
@@ -201,10 +256,25 @@ async function ShowDisplayStatus(statusName) {
   }
   // показать путевые листы
   else if (statusName === ".all-records" /* html.button."Путевые листы" */) {
+    await ShowAllRecords();
   }
   // показать всех работников
   else if (statusName === ".all-works" /* html.button."Работники" */) {
     await ShowAllWorkers();
+  }
+  // показать гсм за день по гаражу
+  else if (
+    statusName ===
+    ".gsm-for-day-garage" /* html.button."ГСМ за день по гаражу" */
+  ) {
+    await ShowGSMDayGarage();
+  }
+  // отчет по ведомостям
+  else if (
+    statusName ===
+    ".sheets-request-report" /* html.button."Отчет по ведомостям" */
+  ) {
+    await ShowRequestReportSheet();
   }
 
   document.querySelector(".nav").style.display = "none"; // скрыть навигацию
@@ -1619,3 +1689,696 @@ async function RemoveSheet() {
 }
 // ____________________________________________________________ | Функция для удаления ведомости
 // ______________________________________________________________________ | [ЛОГИКА] Состояние "Ведомости"
+
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Путевые листы"
+// ____________________________________________________________ | Функция для отображения всех путевых листов в html.table
+async function ShowAllRecords() {
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("SELECT * FROM record");
+
+  [mainAllSheetsRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("SELECT * FROM sheet");
+
+  [mainAllCarsRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("SELECT * FROM car");
+
+  [mainAllWorkersRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute(`select * from worker WHERE worker.Function = 1`);
+
+  [mainAllGSMRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("SELECT * FROM gsm");
+
+  for (
+    let i =
+      document.querySelector("select[name=FromSheets]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromSheets]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromVehicle]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromVehicle]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromDriver]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromDriver]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i = document.querySelector("select[name=FromGSM]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromGSM]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromSheetsCrt]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromSheetsCrt]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromVehicleCrt]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromVehicleCrt]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromDriverCrt]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromDriverCrt]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromGSMCrt]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromGSMCrt]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  if (mainAllSheetsRows.length) {
+    for (let j = 0; j < mainAllSheetsRows.length; j++) {
+      let newOption1 = new Option(
+        `${mainAllSheetsRows[j]["NumberSheet"]} : ${moment(
+          mainAllSheetsRows[j]["DateSheet"]
+        ).format("YYYY-MM-DD")}`,
+        mainAllSheetsRows[j]["ID"]
+      );
+      let newOption2 = new Option(
+        `${mainAllSheetsRows[j]["NumberSheet"]} : ${moment(
+          mainAllSheetsRows[j]["DateSheet"]
+        ).format("YYYY-MM-DD")}`,
+        mainAllSheetsRows[j]["ID"]
+      );
+
+      document.querySelector("select[name=FromSheets]").options[
+        document.querySelector("select[name=FromSheets]").length
+      ] = newOption1;
+
+      document.querySelector("select[name=FromSheetsCrt]").options[
+        document.querySelector("select[name=FromSheetsCrt]").length
+      ] = newOption2;
+    }
+  }
+
+  if (mainAllCarsRows.length) {
+    for (let j = 0; j < mainAllCarsRows.length; j++) {
+      let newOption1 = new Option(
+        `${mainAllCarsRows[j]["Model"]} : ${mainAllCarsRows[j]["Number"]}`,
+        mainAllCarsRows[j]["ID"]
+      );
+      let newOption2 = new Option(
+        `${mainAllCarsRows[j]["Model"]} : ${mainAllCarsRows[j]["Number"]}`,
+        mainAllCarsRows[j]["ID"]
+      );
+
+      document.querySelector("select[name=FromVehicle]").options[
+        document.querySelector("select[name=FromVehicle]").length
+      ] = newOption1;
+
+      document.querySelector("select[name=FromVehicleCrt]").options[
+        document.querySelector("select[name=FromVehicleCrt]").length
+      ] = newOption2;
+    }
+  }
+
+  if (mainAllWorkersRows.length) {
+    for (let j = 0; j < mainAllWorkersRows.length; j++) {
+      let newOption1 = new Option(
+        `${mainAllWorkersRows[j]["FIO"]}`,
+        mainAllWorkersRows[j]["ID"]
+      );
+      let newOption2 = new Option(
+        `${mainAllWorkersRows[j]["FIO"]}`,
+        mainAllWorkersRows[j]["ID"]
+      );
+
+      document.querySelector("select[name=FromDriver]").options[
+        document.querySelector("select[name=FromDriver]").length
+      ] = newOption1;
+
+      document.querySelector("select[name=FromDriverCrt]").options[
+        document.querySelector("select[name=FromDriverCrt]").length
+      ] = newOption2;
+    }
+  }
+
+  if (mainAllGSMRows.length) {
+    for (let j = 0; j < mainAllGSMRows.length; j++) {
+      let newOption1 = new Option(
+        `${mainAllGSMRows[j]["Name"]}`,
+        mainAllGSMRows[j]["ID"]
+      );
+      let newOption2 = new Option(
+        `${mainAllGSMRows[j]["Name"]}`,
+        mainAllGSMRows[j]["ID"]
+      );
+
+      document.querySelector("select[name=FromGSM]").options[
+        document.querySelector("select[name=FromGSM]").length
+      ] = newOption1;
+
+      document.querySelector("select[name=FromGSMCrt]").options[
+        document.querySelector("select[name=FromGSMCrt]").length
+      ] = newOption2;
+    }
+  }
+
+  // __________________________________________________ | Процесс отрисовки html.table
+  let construntBlock = `
+      <table class="table_col">
+        <colgroup>
+          <col style="background: #555555" />
+        </colgroup>
+        <tr>
+          <th>ID путевого листа</th>
+          <th>Номер ведомости<br>______________<br>Дата ведомости</th>
+          <th>Название автомобиля<br>__________<br>Номер автомобиля</th>
+          <th>Водитель</th>
+          <th>№ путевого листа</th>
+          <th>ГСМ</th>
+          <th>Количество литров</th>
+        </tr>
+      `; // Размечаем шапку html.table
+
+  if (rows.length) {
+    for (let i = 0; i < rows.length; i++) {
+      let tempNomerDateSheet = "";
+      let temoNameVehicle = "";
+      let tempFIOWorker = "";
+      let tempGSMName = "";
+
+      for (let j = 0; j < mainAllSheetsRows.length; j++) {
+        if (mainAllSheetsRows[j]["ID"] == rows[i]["IDsheet"])
+          tempNomerDateSheet = `
+          ${mainAllSheetsRows[j]["NumberSheet"]}<br>_________<br>
+          ${moment(mainAllSheetsRows[j]["DateSheet"]).format("YYYY-MM-DD")}
+          `;
+      }
+
+      for (let j = 0; j < mainAllCarsRows.length; j++) {
+        if (mainAllCarsRows[j]["ID"] == rows[i]["IDcar"])
+          temoNameVehicle = `${mainAllCarsRows[j]["Model"]}<br>_______<br>${mainAllCarsRows[j]["Number"]}`;
+      }
+
+      for (let j = 0; j < mainAllWorkersRows.length; j++) {
+        if (mainAllWorkersRows[j]["ID"] === rows[i]["IDdriver"])
+          tempFIOWorker = mainAllWorkersRows[j]["FIO"];
+      }
+
+      for (let j = 0; j < mainAllGSMRows.length; j++) {
+        if (mainAllGSMRows[j]["ID"] === rows[i]["IDgsm"])
+          tempGSMName = mainAllGSMRows[j]["Name"];
+      }
+
+      construntBlock += `
+          <tr>
+            <td>${rows[i]["ID"]}</td>
+            <td>${tempNomerDateSheet}</td>
+            <td>${temoNameVehicle}</td>
+            <td>${tempFIOWorker}</td>
+            <td>${rows[i]["NumberPL"]}</td>
+            <td>${tempGSMName}</td>
+            <td>${rows[i]["Liter"]}</td>
+          </tr>
+          `;
+    }
+  } else {
+    construntBlock += `<tr><td rowspan="1" colspan="7">Нету путевок</td></tr>`; // Размечаем информацию о отсутствии элементов
+  }
+
+  construntBlock += `</table>`; // Заканчиваем размечать html.table
+
+  document.querySelector(".all-records .display-print").innerHTML =
+    construntBlock; // Окончательно рисуем результаты в родительском html.div
+  // __________________________________________________ | Процесс отрисовки html.table
+}
+// ____________________________________________________________ | Функция для отображения всех путевых листов в html.table
+
+// ____________________________________________________________ | Функция для редактирования путевых листов
+async function RenameRecord() {
+  let idRecord = document.querySelector(".input-id-change-record").value;
+
+  let newRecordSheetIndex = document.querySelector("select[name=FromSheets]")
+    .options.selectedIndex;
+  let newRecordSheetValue = document.querySelector("select[name=FromSheets]")
+    .options[newRecordSheetIndex].value;
+
+  let newRecordVehicleIndex = document.querySelector("select[name=FromVehicle]")
+    .options.selectedIndex;
+  let newRecordVehicleValue = document.querySelector("select[name=FromVehicle]")
+    .options[newRecordVehicleIndex].value;
+
+  let newRecordDriverIndex = document.querySelector("select[name=FromDriver]")
+    .options.selectedIndex;
+  let newRecordDriverValue = document.querySelector("select[name=FromDriver]")
+    .options[newRecordDriverIndex].value;
+
+  let numerPL = document.querySelector(".input-nomer-change-numPL").value;
+
+  let newRecordGSMIndex = document.querySelector("select[name=FromGSM]").options
+    .selectedIndex;
+  let newRecordGSMValue = document.querySelector("select[name=FromGSM]")
+    .options[newRecordGSMIndex].value;
+
+  let kolvoLiter = document.querySelector(".input-liter-change-gsm").value;
+
+  const [rows] = await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `UPDATE record SET IDsheet = '${newRecordSheetValue}', IDcar = '${newRecordVehicleValue}', IDdriver = '${newRecordDriverValue}', NumberPL = '${numerPL}', IDgsm = '${newRecordGSMValue}', Liter = '${kolvoLiter}' WHERE ID = ${idRecord}`
+    );
+
+  if (rows["affectedRows"] /* MySQL вернул успешный результат */)
+    window.alert(`Путевой лист ID:${idRecord} потерпел изменения`);
+  else window.alert(`Путевой лист по ID не найден для изменений`);
+
+  await ShowAllRecords();
+}
+// ____________________________________________________________ | Функция для редактирования путевых листов
+
+// ____________________________________________________________ | Функция для создания путевых листов
+async function CreateRecord() {
+  let newRecordSheetIndex = document.querySelector("select[name=FromSheetsCrt]")
+    .options.selectedIndex;
+  let newRecordSheetValue = document.querySelector("select[name=FromSheetsCrt]")
+    .options[newRecordSheetIndex].value;
+
+  let newRecordVehicleIndex = document.querySelector(
+    "select[name=FromVehicleCrt]"
+  ).options.selectedIndex;
+  let newRecordVehicleValue = document.querySelector(
+    "select[name=FromVehicleCrt]"
+  ).options[newRecordVehicleIndex].value;
+
+  let newRecordDriverIndex = document.querySelector(
+    "select[name=FromDriverCrt]"
+  ).options.selectedIndex;
+  let newRecordDriverValue = document.querySelector(
+    "select[name=FromDriverCrt]"
+  ).options[newRecordDriverIndex].value;
+
+  let numerPL = document.querySelector(".input-nomer-crt-numPL").value;
+
+  let newRecordGSMIndex = document.querySelector("select[name=FromGSMCrt]")
+    .options.selectedIndex;
+  let newRecordGSMValue = document.querySelector("select[name=FromGSMCrt]")
+    .options[newRecordGSMIndex].value;
+
+  let kolvoLiter = document.querySelector(".input-liter-crt-gsm").value;
+
+  await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `insert into record (IDsheet, IDcar, IDdriver, NumberPL, IDgsm, Liter) values ('${newRecordSheetValue}', '${newRecordVehicleValue}', '${newRecordDriverValue}', '${numerPL}', '${newRecordGSMValue}', '${kolvoLiter}')`
+    );
+
+  window.alert(`Путевой лист:${numerPL} создан`);
+
+  await ShowAllRecords();
+}
+// ____________________________________________________________ | Функция для создания путевых листов
+
+// ____________________________________________________________ | Функция для удаления путевых листов
+async function RemoveRecord() {
+  let idRecord = document.querySelector(".input-id-delete-record").value;
+
+  await remote
+    .getGlobal("connectMySQL")
+    .execute(`DELETE FROM record WHERE ID = ${idRecord}`);
+
+  await ShowAllRecords();
+}
+// ____________________________________________________________ | Функция для удаления путевых листов
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Путевые листы"
+
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "ГСМ за день по гаражу"
+// ____________________________________________________________ | Функция для загрузки выпадающих список и очиски html.table
+async function ShowGSMDayGarage() {
+  [mainAllSheetsRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("SELECT * FROM sheet");
+
+  [mainAllGaragesRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("select * from garage");
+
+  for (
+    let i =
+      document.querySelector("select[name=FromDateGSMDay]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromDateGSMDay]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  for (
+    let i =
+      document.querySelector("select[name=FromGarageGSMDay]").options.length -
+      1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromGarageGSMDay]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  if (mainAllSheetsRows.length) {
+    for (let j = 0; j < mainAllSheetsRows.length; j++) {
+      let newOption1 = new Option(
+        moment(mainAllSheetsRows[j]["DateSheet"]).format("YYYY-MM-DD"),
+        moment(mainAllSheetsRows[j]["DateSheet"]).format("YYYY-MM-DD")
+      );
+
+      document.querySelector("select[name=FromDateGSMDay]").options[
+        document.querySelector("select[name=FromDateGSMDay]").length
+      ] = newOption1;
+    }
+  }
+
+  if (mainAllGaragesRows.length) {
+    for (let j = 0; j < mainAllGaragesRows.length; j++) {
+      let newOption1 = new Option(
+        mainAllGaragesRows[j]["Name"],
+        mainAllGaragesRows[j]["ID"]
+      );
+
+      document.querySelector("select[name=FromGarageGSMDay]").options[
+        document.querySelector("select[name=FromGarageGSMDay]").length
+      ] = newOption1;
+    }
+  }
+
+  let construntBlock = `
+  <table class="table_col">
+    <colgroup>
+      <col style="background: #555555" />
+    </colgroup>
+    <tr>
+      <th>Гараж</th>
+      <th>ГСМ</th>
+      <th>Литров</th>
+      <th>Кг</th>
+    </tr>
+    <tr>
+      <td rowspan="1" colspan="4">
+        Таблица с отчетами не запрошена
+      </td>
+    </tr>
+  </table>
+  `; // Размечаем html.table
+
+  document.querySelector(".gsm-for-day-garage .display-print").innerHTML =
+    construntBlock; // Окончательно рисуем результаты в родительском html.div
+}
+// ____________________________________________________________ | Функция для загрузки выпадающих список и очиски html.table
+
+// ____________________________________________________________ | Функция для загрузки отчета в html.table
+async function RequestReportGSMDay() {
+  let newRequestReportDateIndex = document.querySelector(
+    "select[name=FromDateGSMDay]"
+  ).options.selectedIndex;
+  let newRequestReportDateValue = document.querySelector(
+    "select[name=FromDateGSMDay]"
+  ).options[newRequestReportDateIndex].value;
+
+  let newRequestReportGarageIndex = document.querySelector(
+    "select[name=FromGarageGSMDay]"
+  ).options.selectedIndex;
+  let newRequestReportGarageValue = document.querySelector(
+    "select[name=FromGarageGSMDay]"
+  ).options[newRequestReportGarageIndex].value;
+
+  await remote
+    .getGlobal("connectMySQL")
+    .execute(
+      `SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`
+    );
+
+  const [requestReportRows] = await remote.getGlobal("connectMySQL")
+    .execute(`SELECT garage.Name, gsm.Name, SUM(record.Liter) as Liter, SUM(record.Liter)*ForKilo as Kilo
+    FROM gsm
+    INNER JOIN record ON gsm.ID = record.IDgsm
+    INNER JOIN sheet ON sheet.ID = record.IDsheet
+    INNER JOIN garage ON garage.ID = sheet.IDgarage
+    WHERE sheet.DateSheet = '${newRequestReportDateValue}'
+    and garage.ID = ${newRequestReportGarageValue}
+    GROUP BY garage.Name, gsm.Name`);
+
+  let construntBlock = `
+  <table class="table_col">
+    <colgroup>
+      <col style="background: #555555" />
+    </colgroup>
+    <tr>
+      <th>Гараж</th>
+      <th>ГСМ</th>
+      <th>Литров</th>
+      <th>Кг</th>
+    </tr>
+    `; // Размечаем html.table
+
+  if (requestReportRows.length) {
+    for (let i = 0; i < requestReportRows.length; i++) {
+      construntBlock += `
+      <tr>
+        <td>${mainAllGaragesRows[0]["Name"]}</td>
+        <td>${requestReportRows[i]["Name"]}</td>
+        <td>${requestReportRows[i]["Liter"]}</td>
+        <td>${requestReportRows[i]["Kilo"]}</td>
+      </tr>
+      `;
+    }
+  } else {
+    construntBlock += `
+    <tr>
+      <td rowspan="1" colspan="4">
+        Отчеты не найдены
+      </td>
+    </tr>
+    `;
+  }
+
+  construntBlock += `</table>`;
+
+  document.querySelector(".gsm-for-day-garage .display-print").innerHTML =
+    construntBlock; // Окончательно рисуем результаты в родительском html.div
+}
+// ____________________________________________________________ | Функция для загрузки отчета в html.table
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "ГСМ за день по гаражу"
+
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Отчет по ведомостям"
+// ____________________________________________________________ | Функция для загрузки выпадающих список и очиски html.table
+async function ShowRequestReportSheet() {
+  [mainAllSheetsRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("SELECT * FROM sheet");
+
+  [mainAllBasesRows] = await remote
+    .getGlobal("connectMySQL")
+    .execute("select * from base");
+
+  for (
+    let i =
+      document.querySelector("select[name=FromSheetReqRep]").options.length - 1;
+    i >= 0;
+    i--
+  ) {
+    document.querySelector("select[name=FromSheetReqRep]").options[i] = null;
+  } // Очищаем выпадающие списки
+
+  if (mainAllSheetsRows.length) {
+    for (let j = 0; j < mainAllSheetsRows.length; j++) {
+      let newOption1 = new Option(
+        mainAllSheetsRows[j]["NumberSheet"],
+        mainAllSheetsRows[j]["ID"]
+      );
+
+      document.querySelector("select[name=FromSheetReqRep]").options[
+        document.querySelector("select[name=FromSheetReqRep]").length
+      ] = newOption1;
+    }
+  }
+
+  let construntBlock = `
+  <table class="table_col">
+    <colgroup>
+      <col style="background: #555555" />
+    </colgroup>
+    <tr>
+      <th>База</th>
+      <th>Гараж</th>
+      <th>Номер ведомости</th>
+      <th>Дата</th>
+      <th>Подписан</th>
+    </tr>
+    <tr>
+      <td rowspan="1" colspan="5">
+        Таблица с отчетами не запрошена
+      </td>
+    </tr>
+  </table>
+
+  <br />
+
+  <table class="table_col">
+    <colgroup>
+      <col style="background: #555555" />
+    </colgroup>
+    <tr>
+      <th>Автомобиль</th>
+      <th>Номер</th>
+      <th>№ путевого листа</th>
+      <th>Водитель</th>
+      <th>ГСМ</th>
+      <th>Литры</th>
+    </tr>
+    <tr>
+      <td rowspan="1" colspan="6">
+        Таблица с отчетами не запрошена
+      </td>
+    </tr>
+  </table>
+  `; // Размечаем html.table
+
+  document.querySelector(".sheets-request-report .display-print").innerHTML =
+    construntBlock; // Окончательно рисуем результаты в родительском html.div
+}
+// ____________________________________________________________ | Функция для загрузки выпадающих список и очиски html.table
+
+// ____________________________________________________________ | Функция для загрузки отчета в html.table
+async function RequestReportSheet() {
+  let newRequestReportSheetIndex = document.querySelector(
+    "select[name=FromSheetReqRep]"
+  ).options.selectedIndex;
+  let newRequestReportSheetValue = document.querySelector(
+    "select[name=FromSheetReqRep]"
+  ).options[newRequestReportSheetIndex].value;
+
+  const [requestReportHeaderRows] = await remote.getGlobal("connectMySQL")
+    .execute(`SELECT
+    base.Name,
+    garage.Name,
+    sheet.NumberSheet,
+    sheet.DateSheet,
+    worker.FIO
+    FROM
+    sheet
+    INNER JOIN garage ON garage.ID = sheet.IDgarage
+    INNER JOIN base ON base.ID = garage.IDbase    
+    INNER JOIN worker ON base.ID = worker.IDbase and worker.ID = sheet.IDsigner
+    where sheet.ID = ${newRequestReportSheetValue}`);
+
+  const [requestReportBodyRows] = await remote.getGlobal("connectMySQL")
+    .execute(`SELECT
+    car.Model,
+    car.Number,
+    record.NumberPL,
+    worker.FIO,
+    gsm.Name,
+    record.Liter
+    FROM
+    sheet
+    INNER JOIN record ON record.IDsheet = sheet.ID
+    INNER JOIN car ON car.ID = record.IDcar
+    INNER JOIN gsm ON gsm.ID = record.IDgsm
+    INNER JOIN worker ON worker.ID = record.IDdriver
+    WHERE
+    sheet.ID = ${newRequestReportSheetValue}`);
+
+  let construntBlock = `
+  <table class="table_col">
+    <colgroup>
+      <col style="background: #555555" />
+    </colgroup>
+    <tr>
+      <th>База</th>
+      <th>Гараж</th>
+      <th>Номер ведомости</th>
+      <th>Дата</th>
+      <th>Подписант</th>
+    </tr>
+    <tr>
+      <td>${mainAllBasesRows[0]["Name"]}</td>
+      <td>${requestReportHeaderRows[0]["Name"]}</td>
+      <td>${requestReportHeaderRows[0]["NumberSheet"]}</td>
+      <td>${moment(requestReportHeaderRows[0]["DateSheet"]).format(
+        "YYYY-MM-DD"
+      )}</td>
+      <td>${requestReportHeaderRows[0]["FIO"]}</td>
+    </tr>
+  </table>
+
+  <br />
+
+  <table class="table_col">
+    <colgroup>
+      <col style="background: #555555" />
+    </colgroup>
+    <tr>
+      <th>Автомобиль</th>
+      <th>Номер</th>
+      <th>№ путевого листа</th>
+      <th>Водитель</th>
+      <th>ГСМ</th>
+      <th>Литры</th>
+    </tr>
+    `; // Размечаем html.table
+
+  if (requestReportBodyRows.length) {
+    for (let i = 0; i < requestReportBodyRows.length; i++) {
+      construntBlock += `
+        <tr>
+        <td>${requestReportBodyRows[i]["Model"]}</td>
+        <td>${requestReportBodyRows[i]["Number"]}</td>
+        <td>${requestReportBodyRows[i]["NumberPL"]}</td>
+        <td>${requestReportBodyRows[i]["FIO"]}</td>
+        <td>${requestReportBodyRows[i]["Name"]}</td>
+        <td>${requestReportBodyRows[i]["Liter"]}</td>
+      </tr>
+      `;
+    }
+  } else {
+    construntBlock += `
+    <tr>
+      <td rowspan="1" colspan="6">
+        Отчеты не найдены
+      </td>
+    </tr>
+    `;
+  }
+
+  construntBlock += `</table>`;
+
+  document.querySelector(".sheets-request-report .display-print").innerHTML =
+    construntBlock; // Окончательно рисуем результаты в родительском html.div
+}
+// ____________________________________________________________ | Функция для загрузки отчета в html.table
+// ______________________________________________________________________ | [ЛОГИКА] Состояние "Отчет по ведомостям"

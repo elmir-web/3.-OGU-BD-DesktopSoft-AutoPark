@@ -275,6 +275,42 @@ body {
 
         .all-records {
           display: none;
+
+          button.butt-change-records,
+          button.butt-crt-records {
+            width: 100%;
+          }
+
+          form[name="formFromChangedRecords"],
+          form[name="formFromCreatedRecords"] {
+            display: flex;
+            flex-direction: column;
+
+            .input-nomer-change-numPL,
+            .input-liter-change-gsm,
+            .input-id-change-record,
+            .input-nomer-crt-numPL,
+            .input-liter-crt-gsm {
+              margin-bottom: 10px;
+            }
+
+            select[name="FromSheets"],
+            select[name="FromVehicle"],
+            select[name="FromDriver"],
+            select[name="FromGSM"],
+            select[name="FromSheetsCrt"],
+            select[name="FromVehicleCrt"],
+            select[name="FromDriverCrt"],
+            select[name="FromGSMCrt"] {
+              background-color: #212121;
+              color: #ccc;
+              padding: 10px;
+              outline: none;
+              border: 0;
+              border-bottom: 3px solid #333;
+              margin-bottom: 10px;
+            }
+          }
         }
 
         .all-works {
@@ -283,6 +319,7 @@ body {
           form[name="formFromChangedWorker"],
           form[name="formFromCreatedWorker"] {
             display: inline-block;
+
             select[name="FromFunctions"],
             select[name="FromChangeBase"],
             select[name="FromFunctionsCrt"],
@@ -295,23 +332,42 @@ body {
               border-bottom: 3px solid #333;
             }
           }
+        }
 
-          // form[name="formFromChangedWorker"],
-          // form[name="formFromCreatedWorker"] {
-          //   // добавить создание
-          //   display: inline-block;
+        .gsm-for-day-garage {
+          display: none;
 
-          //   select[name="FromFunctions"],
-          //   select[name="FromFunctionsCrt"] {
-          //     // добавить создание
-          //     background-color: #212121;
-          //     color: #ccc;
-          //     padding: 10px;
-          //     outline: none;
-          //     border: 0;
-          //     border-bottom: 3px solid #333;
-          //   }
-          // }
+          form[name="formFromGSMDAYGARAGE"] {
+            display: inline-block;
+
+            select[name="FromDateGSMDay"],
+            select[name="FromGarageGSMDay"] {
+              background-color: #212121;
+              color: #ccc;
+              padding: 10px;
+              outline: none;
+              border: 0;
+              border-bottom: 3px solid #333;
+            }
+          }
+        }
+
+        .sheets-request-report {
+          display: none;
+          display: none;
+
+          form[name="formFromSheetReport"] {
+            display: inline-block;
+
+            select[name="FromSheetReqRep"] {
+              background-color: #212121;
+              color: #ccc;
+              padding: 10px;
+              outline: none;
+              border: 0;
+              border-bottom: 3px solid #333;
+            }
+          }
         }
       }
     }

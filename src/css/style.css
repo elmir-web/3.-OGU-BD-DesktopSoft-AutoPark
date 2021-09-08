@@ -306,6 +306,60 @@ body .main-app .main .display .all-records {
   display: none;
 }
 
+body .main-app .main .display .all-records button.butt-change-records,
+body .main-app .main .display .all-records button.butt-crt-records {
+  width: 100%;
+}
+
+body .main-app .main .display .all-records form[name="formFromChangedRecords"],
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] .input-nomer-change-numPL,
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] .input-liter-change-gsm,
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] .input-id-change-record,
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] .input-nomer-crt-numPL,
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] .input-liter-crt-gsm,
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] .input-nomer-change-numPL,
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] .input-liter-change-gsm,
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] .input-id-change-record,
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] .input-nomer-crt-numPL,
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] .input-liter-crt-gsm {
+  margin-bottom: 10px;
+}
+
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] select[name="FromSheets"],
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] select[name="FromVehicle"],
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] select[name="FromDriver"],
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] select[name="FromGSM"],
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] select[name="FromSheetsCrt"],
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] select[name="FromVehicleCrt"],
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] select[name="FromDriverCrt"],
+body .main-app .main .display .all-records form[name="formFromChangedRecords"] select[name="FromGSMCrt"],
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] select[name="FromSheets"],
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] select[name="FromVehicle"],
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] select[name="FromDriver"],
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] select[name="FromGSM"],
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] select[name="FromSheetsCrt"],
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] select[name="FromVehicleCrt"],
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] select[name="FromDriverCrt"],
+body .main-app .main .display .all-records form[name="formFromCreatedRecords"] select[name="FromGSMCrt"] {
+  background-color: #212121;
+  color: #ccc;
+  padding: 10px;
+  outline: none;
+  border: 0;
+  border-bottom: 3px solid #333;
+  margin-bottom: 10px;
+}
+
 body .main-app .main .display .all-works {
   display: none;
 }
@@ -323,6 +377,42 @@ body .main-app .main .display .all-works form[name="formFromCreatedWorker"] sele
 body .main-app .main .display .all-works form[name="formFromCreatedWorker"] select[name="FromChangeBase"],
 body .main-app .main .display .all-works form[name="formFromCreatedWorker"] select[name="FromFunctionsCrt"],
 body .main-app .main .display .all-works form[name="formFromCreatedWorker"] select[name="FromCreateBase"] {
+  background-color: #212121;
+  color: #ccc;
+  padding: 10px;
+  outline: none;
+  border: 0;
+  border-bottom: 3px solid #333;
+}
+
+body .main-app .main .display .gsm-for-day-garage {
+  display: none;
+}
+
+body .main-app .main .display .gsm-for-day-garage form[name="formFromGSMDAYGARAGE"] {
+  display: inline-block;
+}
+
+body .main-app .main .display .gsm-for-day-garage form[name="formFromGSMDAYGARAGE"] select[name="FromDateGSMDay"],
+body .main-app .main .display .gsm-for-day-garage form[name="formFromGSMDAYGARAGE"] select[name="FromGarageGSMDay"] {
+  background-color: #212121;
+  color: #ccc;
+  padding: 10px;
+  outline: none;
+  border: 0;
+  border-bottom: 3px solid #333;
+}
+
+body .main-app .main .display .sheets-request-report {
+  display: none;
+  display: none;
+}
+
+body .main-app .main .display .sheets-request-report form[name="formFromSheetReport"] {
+  display: inline-block;
+}
+
+body .main-app .main .display .sheets-request-report form[name="formFromSheetReport"] select[name="FromSheetReqRep"] {
   background-color: #212121;
   color: #ccc;
   padding: 10px;

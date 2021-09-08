@@ -31,19 +31,32 @@
 
         <div class="nav">
           <h2>Навигация по программе</h2>
-          <button class="all-butt butt-navs butt-base">Все базы</button>
-          <button class="all-butt butt-navs butt-garage">Все гаражи</button>
-          <button class="all-butt butt-navs butt-auto">Все автомобили</button>
-          <button class="all-butt butt-navs butt-gsm">Виды ГСМ</button>
-          <button class="all-butt butt-navs butt-sheet">Ведомости</button>
-          <button class="all-butt butt-navs butt-record">Путевые листы</button>
-          <button class="all-butt butt-navs butt-worker">Работники</button>
+          <button class="all-butt butt-navs butt-base">1. Все базы</button>
+          <button class="all-butt butt-navs butt-gsm">2. Виды ГСМ</button>
+          <button class="all-butt butt-navs butt-garage">3. Все гаражи</button>
+          <button class="all-butt butt-navs butt-auto">
+            4. Все автомобили
+          </button>
+          <button class="all-butt butt-navs butt-worker">5. Работники</button>
+          <button class="all-butt butt-navs butt-sheet">6. Ведомости</button>
+          <button class="all-butt butt-navs butt-record">
+            7. Путевые листы
+          </button>
+
+          <h2>Отчеты в компании</h2>
+          <button class="all-butt butt-navs butt-gsmforday">
+            1. ГСМ за день по гаражу
+          </button>
+          <button class="all-butt butt-navs butt-sheets">
+            2. Отчет по ведомостям
+          </button>
         </div>
 
         <div class="display">
           <button class="all-button butt-navs butt-to-navs">Назад</button>
 
           <div class="all-display all-base">
+            <h2>Базы компании</h2>
             <div class="display-print">| тут будут все базы |</div>
 
             <h2>Отредактировать название базы</h2>
@@ -89,6 +102,7 @@
           </div>
 
           <div class="all-display all-garages">
+            <h2>Гаражи компании</h2>
             <div class="display-print">| тут будут все гаражи |</div>
 
             <h2>Отредактировать название и назначение гаража</h2>
@@ -150,6 +164,7 @@
           </div>
 
           <div class="all-display all-autos">
+            <h2>Автомобили компании</h2>
             <div class="display-print">| тут будут все автомобили |</div>
 
             <h2>Отредактировать автомобиль</h2>
@@ -221,6 +236,7 @@
           </div>
 
           <div class="all-display types-fuels-and-lubs">
+            <h2>Виды ГСМ компании</h2>
             <div class="display-print">| тут будут все виды гсм |</div>
 
             <h2>Отредактировать ГСМ</h2>
@@ -276,6 +292,7 @@
           </div>
 
           <div class="all-display all-sheets">
+            <h2>Ведомости компании</h2>
             <div class="display-print">| тут будут все Ведомости |</div>
 
             <h2>Отредактировать ведомость</h2>
@@ -358,9 +375,100 @@
             </div>
           </div>
 
-          <div class="all-display all-records">все путевые листы</div>
+          <div class="all-display all-records">
+            <h2>Путевые листы компании</h2>
+            <div class="display-print">| тут будут все путевки |</div>
+
+            <h2>Отредактировать путевку</h2>
+            <div class="display-control">
+              <form name="formFromChangedRecords">
+                <input
+                  type="text"
+                  class="input-id-change-record"
+                  placeholder="Введите ID путевого листа"
+                />
+                <select name="FromSheets" size="1">
+                  <option value="55">fdsfdfsd</option>
+                  <option value="22">fsdfsdf</option>
+                </select>
+                <select name="FromVehicle" size="1">
+                  <option value="55">fdsfdfsd</option>
+                  <option value="22">fsdfsdf</option>
+                </select>
+                <select name="FromDriver" size="1">
+                  <option value="55">fdsfdfsd</option>
+                  <option value="22">fsdfsdf</option>
+                </select>
+                <input
+                  type="text"
+                  class="input-nomer-change-numPL"
+                  placeholder="Введите № путевого листа"
+                />
+                <select name="FromGSM" size="1">
+                  <option value="55">fdsfdfsd</option>
+                  <option value="22">fsdfsdf</option>
+                </select>
+                <input
+                  type="text"
+                  class="input-liter-change-gsm"
+                  placeholder="Введите количество литров"
+                />
+              </form>
+              <button class="all-butt butt-navs butt-change-records">
+                Изменить
+              </button>
+            </div>
+
+            <h2>Создать путевку</h2>
+            <div class="display-control">
+              <form name="formFromCreatedRecords">
+                <select name="FromSheetsCrt" size="1">
+                  <option value="55">fdsfdfsd</option>
+                  <option value="22">fsdfsdf</option>
+                </select>
+                <select name="FromVehicleCrt" size="1">
+                  <option value="55">fdsfdfsd</option>
+                  <option value="22">fsdfsdf</option>
+                </select>
+                <select name="FromDriverCrt" size="1">
+                  <option value="55">fdsfdfsd</option>
+                  <option value="22">fsdfsdf</option>
+                </select>
+                <input
+                  type="text"
+                  class="input-nomer-crt-numPL"
+                  placeholder="Введите № путевого листа"
+                />
+                <select name="FromGSMCrt" size="1">
+                  <option value="55">fdsfdfsd</option>
+                  <option value="22">fsdfsdf</option>
+                </select>
+                <input
+                  type="text"
+                  class="input-liter-crt-gsm"
+                  placeholder="Введите количество литров"
+                />
+              </form>
+              <button class="all-butt butt-navs butt-crt-records">
+                Создать путевой лист
+              </button>
+            </div>
+
+            <h2>Удалить путевку</h2>
+            <div class="display-control">
+              <input
+                type="text"
+                class="input-id-delete-record"
+                placeholder="Введите ID путевого листа"
+              />
+              <button class="all-butt butt-navs butt-remove-records">
+                Удалить путевой лист
+              </button>
+            </div>
+          </div>
 
           <div class="all-display all-works">
+            <h2>Таблица сотрудников компании</h2>
             <div class="display-print">| тут будут все сотрудники |</div>
 
             <h2>Отредактировать сотрудника</h2>
@@ -425,6 +533,114 @@
               />
               <button class="all-butt butt-navs butt-remove-worker">
                 Удалить сотрудника
+              </button>
+            </div>
+          </div>
+
+          <div class="all-display gsm-for-day-garage">
+            <h2>ГСМ за день по гаражу</h2>
+            <div class="display-print">
+              <table class="table_col">
+                <colgroup>
+                  <col style="background: #555555" />
+                </colgroup>
+                <tr>
+                  <th>Гараж</th>
+                  <th>ГСМ</th>
+                  <th>Литров</th>
+                  <th>Кг</th>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="4">
+                    Таблица с отчетами не запрошена
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <h2>Запросить отчет</h2>
+            <div class="display-control">
+              <form name="formFromGSMDAYGARAGE">
+                <select name="FromDateGSMDay" size="1">
+                  <option value="1fds">fdsfsdfsdf</option>
+                  <option value="2ww">fdsfsdf</option>
+                </select>
+                <select name="FromGarageGSMDay" size="1">
+                  <option value="1temp">fdsfsdfs</option>
+                  <option value="2temp">fsdfsdfsdf</option>
+                  <option value="2temp">fsdfsdfsd</option>
+                  <option value="2temp">fdsfsdf</option>
+                </select>
+              </form>
+              <button
+                class="all-butt butt-navs butt-request-report-gsm-day-garage"
+              >
+                Загрузить отчет
+              </button>
+              <button
+                class="all-butt butt-navs butt-clear-report-gsm-day-garage"
+              >
+                Очистить таблицу
+              </button>
+            </div>
+          </div>
+
+          <div class="all-display sheets-request-report">
+            <h2>Отчет по ведомостям</h2>
+            <div class="display-print">
+              <table class="table_col">
+                <colgroup>
+                  <col style="background: #555555" />
+                </colgroup>
+                <tr>
+                  <th>База</th>
+                  <th>Гараж</th>
+                  <th>Номер ведомости</th>
+                  <th>Дата</th>
+                  <th>Подписант</th>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="5">
+                    Таблица с отчетами не запрошена
+                  </td>
+                </tr>
+              </table>
+
+              <br />
+
+              <table class="table_col">
+                <colgroup>
+                  <col style="background: #555555" />
+                </colgroup>
+                <tr>
+                  <th>Автомобиль</th>
+                  <th>Номер</th>
+                  <th>№ путевого листа</th>
+                  <th>Водитель</th>
+                  <th>ГСМ</th>
+                  <th>Литры</th>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="6">
+                    Таблица с отчетами не запрошена
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <h2>Запросить отчет</h2>
+            <div class="display-control">
+              <form name="formFromSheetReport">
+                <select name="FromSheetReqRep" size="1">
+                  <option value="1fds">fdsfsdfsdf</option>
+                  <option value="2ww">fdsfsdf</option>
+                </select>
+              </form>
+              <button class="all-butt butt-navs butt-request-report-sheet">
+                Загрузить отчет
+              </button>
+              <button class="all-butt butt-navs butt-clear-report-sheet">
+                Очистить таблицу
               </button>
             </div>
           </div>
