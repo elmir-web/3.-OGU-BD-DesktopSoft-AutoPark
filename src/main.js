@@ -8,10 +8,10 @@ let mainWindow;
 
 const config = {
   // elmir: mysql config
-  host: "localhost",
-  user: "root",
+  host: "23.111.121.178",
+  user: "elmir-web",
   database: "gsm",
-  password: "root",
+  password: "elmir-web",
 };
 
 global.connectMySQL = null;

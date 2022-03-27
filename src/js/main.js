@@ -377,7 +377,7 @@ async function DeleteBase() {
 
     // Если массив "rowsAllBase" имеет хотя бы один элемент
     if (rowsAllBase.length) {
-      /* 
+      /*
                     ДА, мы успешно нашли эту базу, но мы не можем её удалить еще,
                     потому что к ней жестко привязаны и другие данные, например гаражи,
                     а к гаражам, соответственно, водители и так далее.
@@ -484,7 +484,7 @@ async function DeleteBase() {
 
               /*
                     Теперь наша схема выглядит так (наша схема зависимостей):
-                    
+
                               base
                               /   \
                         garage     worker
@@ -504,7 +504,7 @@ async function DeleteBase() {
 
           /*
                     Ну что, пришло время снова глянуть на нашу схему зависимостей данных:
-                    
+
                           base
                           /   \
                     garage     worker
@@ -542,7 +542,7 @@ async function DeleteBase() {
         /*
                     Все наши автомобили успешно удалены и схема зависимостей данных в таблице MySQL
                     теперь позволяем нам удалить гаражи, чтобы мы могли удалить базы:
-                    
+
                           base
                           /   \
                     garage     worker
@@ -556,7 +556,7 @@ async function DeleteBase() {
       /*
                   Но, не спешим радоваться, да мы удалили гаражи, но мы все еще не можем удалить базу,
                   потому что к ней завязаны наши работники:
-                  
+
                         base
                             \
                             worker
@@ -585,11 +585,11 @@ async function DeleteBase() {
 
       /*
                   Глянем на нашу схему зависимостей данных и победа!!! мы можем удалить нашу базу:
-                  
+
                         base
                             \
                             ??? тут ничего нет
-                  
+
                   Теперь она выглядит скромно:
                         base
       */
@@ -2292,7 +2292,7 @@ async function RequestReportSheet() {
     FROM
     sheet
     INNER JOIN garage ON garage.ID = sheet.IDgarage
-    INNER JOIN base ON base.ID = garage.IDbase    
+    INNER JOIN base ON base.ID = garage.IDbase
     INNER JOIN worker ON base.ID = worker.IDbase and worker.ID = sheet.IDsigner
     where sheet.ID = ${newRequestReportSheetValue}`);
 
